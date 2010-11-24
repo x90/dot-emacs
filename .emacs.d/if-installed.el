@@ -176,12 +176,6 @@
 (require 'color-theme)
 (setq color-theme-load-all-themes nil)
 (color-theme-initialize)
-;; (load "colors")
-;; (setq color-theme-choices '(color-theme-deep-blue color-theme-xemacs))
-;; (require 'color-theme-tangotango)
-;; (color-theme-tangotango)
-;; (color-theme-charcoal-black)
-;; (color-theme-deep-blue)
 
 ;;;_* ===== Undo-tree-mode =====
 
