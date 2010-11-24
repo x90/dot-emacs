@@ -12,10 +12,9 @@
 
 ;;;_* ===== Variables =====
 
-;;;_ . --- User name ---
+;;;_ . --- Machine-specific customizations ---
 
-(setq account-username "stakahama")
-(setq machine-name "turtle")
+(load (concat (expand-file-name "~/.emacs.d/") "emacs-local.el"))
 
 ;;;_ . --- Version number ---
 
@@ -309,48 +308,6 @@ one window."
  ;; If there is more than one, they won't work right.
  )
 
-;;;_* ===== Load =====
+;;;_* ===== Load extras =====
 
-(load "common")
-(when (equal machine-name "turtle")
-  (load "turtle")
-  (load "if-installed"))
-
-;;;_* ===== Python-mode =====
-(setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
-(setq interpreter-mode-alist (cons '("python" . python-mode)
-				   interpreter-mode-alist))
-;; (autoload 'python-mode "python-mode" "Python editing mode." t)
-(load "python-mode")
-
-;;;_ . hook
-(add-hook 'python-mode-hook 
-	  '(lambda () 
-	     (local-set-key (kbd "C-c C-j") 'py-execute-line)
-	     (local-set-key (kbd "C-c C-p") 'py-execute-paragraph)))
-
-;;;_ . functions
-(defun py-mark-line ()
-  (interactive)
-  (end-of-line)
-  (push-mark (point))
-  (beginning-of-line)
-  (exchange-point-and-mark)
-  (py-keep-region-active))
-(defun py-execute-line (&optional async)
-  (interactive "P")
-  (save-excursion
-    (py-mark-line)
-    (py-execute-region (mark) (point) async)))
-(defun py-mark-paragraph ()
-  (interactive)
-  (forward-paragraph)
-  (push-mark (point))
-  (backward-paragraph)
-  (exchange-point-and-mark)
-  (py-keep-region-active))
-(defun py-execute-paragraph (&optional async)
-  (interactive "P")
-  (save-excursion
-    (py-mark-paragraph)
-    (py-execute-region (mark) (point) async)))
+(load "load-extras.el")
