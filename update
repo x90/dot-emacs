@@ -1,0 +1,11 @@
+#!/bin/bash
+
+## example usage:
+## bash update "commit message"
+
+rsync -arvuP --exclude='*.elc' --exclude='.saves-*~'  ~/.emacs.d/ .emacs.d/
+rsync -avuP ~/.emacs .
+git add .
+git commit -a -m $1
+git push git@github.com:stakahama/dot-emacs.git master
+
