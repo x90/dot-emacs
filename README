@@ -1,0 +1,6 @@
+1) Download this repository to local machine. 
+2) Edit ~/.emacs.d/emacs-local.el
+
+.emacs will load ~/.emacs.d/emacs-local.el at the top of .emacs
+
+

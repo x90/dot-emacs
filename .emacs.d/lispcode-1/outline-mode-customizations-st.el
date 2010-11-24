@@ -48,7 +48,9 @@
 (define-key cm-map "f" 'outline-forward-same-level)        ; Forward - same level
 (define-key cm-map "b" 'outline-backward-same-level)       ; Backward - same level
 (define-key cm-map "g" 'outline-insert-bullet)  ; ST function
-(local-set-key "\M-[" cm-map)
+(add-hook 'outline-minor-mode-hook 
+	  (lambda ()
+	    (local-set-key "\M-[" cm-map)))
 
 ;;;_* functions
 (defun outline-insert-bullet ()

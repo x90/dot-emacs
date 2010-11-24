@@ -38,6 +38,45 @@
 
 (load "frame-resizing-functions")
 
+;;;_* ===== Python-mode =====
+(setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
+(setq interpreter-mode-alist (cons '("python" . python-mode)
+				   interpreter-mode-alist))
+;; (autoload 'python-mode "python-mode" "Python editing mode." t)
+(load "python-mode")
+
+;;;_ . hook
+(add-hook 'python-mode-hook 
+	  '(lambda () 
+	     (local-set-key (kbd "C-c C-j") 'py-execute-line)
+	     (local-set-key (kbd "C-c C-p") 'py-execute-paragraph)))
+
+;;;_ . functions
+(defun py-mark-line ()
+  (interactive)
+  (end-of-line)
+  (push-mark (point))
+  (beginning-of-line)
+  (exchange-point-and-mark)
+  (py-keep-region-active))
+(defun py-execute-line (&optional async)
+  (interactive "P")
+  (save-excursion
+    (py-mark-line)
+    (py-execute-region (mark) (point) async)))
+(defun py-mark-paragraph ()
+  (interactive)
+  (forward-paragraph)
+  (push-mark (point))
+  (backward-paragraph)
+  (exchange-point-and-mark)
+  (py-keep-region-active))
+(defun py-execute-paragraph (&optional async)
+  (interactive "P")
+  (save-excursion
+    (py-mark-paragraph)
+    (py-execute-region (mark) (point) async)))
+
 ;;;_* ===== R/ESS =====
 (add-to-list 'load-path (concat emacs-root "ess/lisp"))
 (global-set-key (kbd "C-c R") 'my-start-R-ESS);'my-ess-start-R)
@@ -58,9 +97,7 @@
 ;; (setq-default ess-default-style 'C++)
 (setq inferior-ess-r-help-command "utils::help(\"%s\", help_type=\"html\")\n") 
 
-(if (or (eq system-type 'darwin)
-	(eq system-type 'gnu/linux)
-	(eq system-type 'linux))
+(if (eq system-type 'darwin)
     (setq inferior-R-args "--arch x86_64"))
 
 ;;;_ . functions
@@ -136,15 +173,13 @@
 
 ;; commented out for aquamacs
 (add-to-list 'load-path (concat emacs-root "color-theme"))
-(load "colors")
+(require 'color-theme)
+(setq color-theme-load-all-themes nil)
+(color-theme-initialize)
+;; (load "colors")
 ;; (setq color-theme-choices '(color-theme-deep-blue color-theme-xemacs))
-;;{{{
-;;(test-win-sys)
-;;}}}
-;; (eval (list (car color-theme-choices)))
 ;; (require 'color-theme-tangotango)
 ;; (color-theme-tangotango)
-;;(set-fringe-mode 8)
 ;; (color-theme-charcoal-black)
 (color-theme-deep-blue)
 

@@ -5,7 +5,6 @@
 ;;;_* key bindings
 (define-key folding-mode-map "\C-e" 'move-end-of-line)
 (define-prefix-command	'fm-map nil "Folding-")
-(local-set-key "\M-]" fm-map)
 (define-key fm-map "f"	'folding-fold-region)
 (define-key fm-map ">"	'folding-shift-in)
 (define-key fm-map "<"	'folding-shift-out)
@@ -36,9 +35,12 @@
 (define-key fm-map "g"	'folding-comment-region)
 ;; (setq folding-mode-prefix-key "\M-p")
 ;; (folding-bind-default-keys)
-(local-set-key (kbd "C-c @ S") 'folding-show-current-entry)
 (folding-add-to-marks-list 'LilyPond-mode "%%{{{"  "%%}}}" nil t)
 (folding-add-to-marks-list 'ess-mode "##{{{"  "##}}}" nil t)
+(add-hook 'folding-mode-hook 
+	  (lambda ()
+	    (local-set-key "\M-]" fm-map)))
+	    ;; (local-set-key (kbd "C-c @ S") 'folding-show-current-entry)))
 
 ;;;_* functions
 
