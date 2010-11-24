@@ -181,7 +181,7 @@
 ;; (require 'color-theme-tangotango)
 ;; (color-theme-tangotango)
 ;; (color-theme-charcoal-black)
-(color-theme-deep-blue)
+;; (color-theme-deep-blue)
 
 ;;;_* ===== Undo-tree-mode =====
 

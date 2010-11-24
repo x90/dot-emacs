@@ -12,6 +12,10 @@
 
 ;;;_* ===== Variables =====
 
+(defvar emacs-root)
+(defvar account-username)
+(defvar machine-name)
+
 ;;;_ . --- Machine-specific customizations ---
 
 (load (concat (expand-file-name "~/.emacs.d/") "local-settings.el"))
@@ -22,14 +26,18 @@
 
 ;;;_* ===== Paths =====
 
-(defvar emacs-root (if (eq system-type 'darwin)
-		       (format "/Users/%s/.emacs.d/" account-username)
-		     (if (or (eq system-type 'cygwin)
-			     (eq system-type 'gnu/linux)
-			     (eq system-type 'linux))
-			 (format "/home/%s/.emacs.d/" account-username)
-		     "c:/emacs/site-lisp/"))
- "My home directory — the root of my personal emacs load-path.")
+;; (defvar emacs-root (if (eq system-type 'darwin)
+;; 		       (format "/Users/%s/.emacs.d/" account-username)
+;; 		     (if (or (eq system-type 'cygwin)
+;; 			     (eq system-type 'gnu/linux)
+;; 			     (eq system-type 'linux))
+;; 			 (format "/home/%s/.emacs.d/" account-username)
+;; 		     "c:/emacs/site-lisp/"))
+;;  "My home directory — the root of my personal emacs load-path.")
+
+;; ends in slash?
+(if (not (equal (substring emacs-root -1) "/"))
+    (setq emacs-root (concat (emacs-root "/"))))
 
 (labels ((add-path (p)
 	 (add-to-list 'load-path (concat emacs-root p))))

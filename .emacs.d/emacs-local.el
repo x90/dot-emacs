@@ -20,6 +20,7 @@
 	     '("elguapo" . color-theme-charcoal-black)))
       (out 'color-theme-standard)
       (terminal-color 'color-theme-standard)
+      (machine-name machine-name)
       (winsys-color nil)
       (elem nil))
   (if window-system
