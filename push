@@ -3,8 +3,8 @@
 ## example usage:
 ## bash push "commit message"
 
-rsync -arvuP --exclude='*.elc' --exclude='.saves-*~' --delete  ~/.emacs.d/ .emacs.d/
-rsync -avuP ~/.emacs .
+rsync -arvP --exclude='*.elc' --exclude='.saves-*~' --delete  ~/.emacs.d/ .emacs.d/
+rsync -avP ~/.emacs .
 git add .
 git commit -a -m $0
 git push git@github.com:stakahama/dot-emacs.git master
