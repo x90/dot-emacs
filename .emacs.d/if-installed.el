@@ -277,16 +277,19 @@
 
 ;;;_* ===== Viper-vimpulse =====
 
-(add-to-list 'load-path (concat emacs-root "vimpulse"))
-;; (add-hook 'viper-mode-hook (lambda () (require 'vimpulse)))
-(defun vimpulse-on ()
-  (interactive)
-  (require 'vimpulse))
+(when (file-exists-p (concat emacs-root "vimpulse/vimpulse.el"))
+  (add-to-list 'load-path (concat emacs-root "vimpulse"))
+  ;; (add-hook 'viper-mode-hook (lambda () (require 'vimpulse)))
+  (defun vimpulse-on ()
+    (interactive)
+    (require 'vimpulse)))
 
 ;;;_* ===== Google Weather =====
 
-(add-to-list 'load-path (concat emacs-root "google-weather-el"))
-(require 'google-weather)
+(when (file-exists-p (concat emacs-root "google-weather-el/google-weather.el"))
+  (add-to-list 'load-path (concat emacs-root "google-weather-el"))
+  (require 'google-weather))
+
 ;;;_* ===== Multi-term=====
 
 ;;Elscreen has to be loaded first, or will have conflicts(?)
