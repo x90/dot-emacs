@@ -14,7 +14,7 @@
 
 ;;;_ . --- Machine-specific customizations ---
 
-(load (concat (expand-file-name "~/.emacs.d/") "emacs-local.el"))
+(load (concat (expand-file-name "~/.emacs.d/") "local-settings.el"))
 
 ;;;_ . --- Version number ---
 

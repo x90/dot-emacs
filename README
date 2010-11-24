@@ -1,7 +1,7 @@
 1) Download this repository to local machine. 
-2) Edit ~/.emacs.d/emacs-local.el
+2) Edit ~/.emacs.d/local-settings.el
 
-.emacs will load ~/.emacs.d/emacs-local.el at the top of .emacs
+.emacs will load ~/.emacs.d/local-settings.el at the top of .emacs
 
 Byte compile for first time ("0" prefix suppresses prompting for each file):
 C-u 0 M-x byte-recompile-directory
