@@ -1,0 +1,17 @@
+\usepackage{Sweave}
+\usepackage[usenames]{color}
+\definecolor{darkred}{rgb}{0.545,0,0}
+\definecolor{midnightblue}{rgb}{0.098,0.098,0.439}
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{fontshape=sl,
+formatcom=\color{midnightblue}}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{formatcom=\color{darkred}}
+\DefineVerbatimEnvironment{Scode}{Verbatim}{fontshape=sl,
+formatcom=\color{blue}}
+\fvset{listparameters={\setlength{\topsep}{2pt}}} 
+\renewenvironment{Schunk}{\vspace{\topsep}}{\vspace{\topsep}} 
+\SweaveOpts{prefix.string=figures/fig}
+\setkeys{Gin}{width=1.0\textwidth}
+\usepackage{fullpage}
+\parindent 0in
+
+

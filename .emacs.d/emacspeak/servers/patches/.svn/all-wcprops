@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/!svn/ver/6160/trunk/servers/patches
+END
+004_all_outloud-tcl84.patch
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/6160/trunk/servers/patches/004_all_outloud-tcl84.patch
+END
+005_all_speech-server-tcl84.patch
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/6160/trunk/servers/patches/005_all_speech-server-tcl84.patch
+END
+003_all_espeak-tcl84.patch
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/!svn/ver/6160/trunk/servers/patches/003_all_espeak-tcl84.patch
+END
+tcl84-patch.tar.bz2
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/6160/trunk/servers/patches/tcl84-patch.tar.bz2
+END
+001_all_dtk-exp-tcl84.patch
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/6160/trunk/servers/patches/001_all_dtk-exp-tcl84.patch
+END
+002_all_dtk-soft-tcl84.patch
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/6160/trunk/servers/patches/002_all_dtk-soft-tcl84.patch
+END
+006_all_ssh-dtk-exp-tcl84.patch
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/6160/trunk/servers/patches/006_all_ssh-dtk-exp-tcl84.patch
+END
+007_all_ssh-outloud-tcl84.patch
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/6160/trunk/servers/patches/007_all_ssh-outloud-tcl84.patch
+END

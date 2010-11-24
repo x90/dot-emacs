@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 32
+/svn/!svn/ver/6167/trunk/servers
+END
+tts-lib.tcl
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/4669/trunk/servers/tts-lib.tcl
+END
+ttshttpd.tcl
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/5444/trunk/servers/ttshttpd.tcl
+END
+.nosearch
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/4149/trunk/servers/.nosearch
+END
+ssh-espeak
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/4723/trunk/servers/ssh-espeak
+END
+ssh-outloud
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/6166/trunk/servers/ssh-outloud
+END
+ssh-dtk-exp
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/5701/trunk/servers/ssh-dtk-exp
+END
+.servers
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/!svn/ver/4333/trunk/servers/.servers
+END
+espeak
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/!svn/ver/6165/trunk/servers/espeak
+END
+multispeech-notes
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/4047/trunk/servers/multispeech-notes
+END
+outloud
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/!svn/ver/6166/trunk/servers/outloud
+END
+dtk-soft
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/!svn/ver/4669/trunk/servers/dtk-soft
+END
+speech-server
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/4725/trunk/servers/speech-server
+END
+dtk-exp
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/!svn/ver/5528/trunk/servers/dtk-exp
+END
