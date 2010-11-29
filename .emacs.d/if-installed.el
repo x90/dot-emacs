@@ -38,45 +38,6 @@
 
 (load "frame-resizing-functions")
 
-;;;_* ===== Python-mode =====
-(setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
-(setq interpreter-mode-alist (cons '("python" . python-mode)
-				   interpreter-mode-alist))
-;; (autoload 'python-mode "python-mode" "Python editing mode." t)
-(load "python-mode")
-
-;;;_ . hook
-(add-hook 'python-mode-hook 
-	  '(lambda () 
-	     (local-set-key (kbd "C-c C-j") 'py-execute-line)
-	     (local-set-key (kbd "C-c C-p") 'py-execute-paragraph)))
-
-;;;_ . functions
-(defun py-mark-line ()
-  (interactive)
-  (end-of-line)
-  (push-mark (point))
-  (beginning-of-line)
-  (exchange-point-and-mark)
-  (py-keep-region-active))
-(defun py-execute-line (&optional async)
-  (interactive "P")
-  (save-excursion
-    (py-mark-line)
-    (py-execute-region (mark) (point) async)))
-(defun py-mark-paragraph ()
-  (interactive)
-  (forward-paragraph)
-  (push-mark (point))
-  (backward-paragraph)
-  (exchange-point-and-mark)
-  (py-keep-region-active))
-(defun py-execute-paragraph (&optional async)
-  (interactive "P")
-  (save-excursion
-    (py-mark-paragraph)
-    (py-execute-region (mark) (point) async)))
-
 ;;;_* ===== R/ESS =====
 (add-to-list 'load-path (concat emacs-root "ess/lisp"))
 (global-set-key (kbd "C-c R") 'my-start-R-ESS);'my-ess-start-R)
@@ -298,25 +259,6 @@
 
 (require 'multi-term)
 (setq multi-term-program "/bin/bash")
-
-(let ((termkeys '(("M-DEL" . term-send-backward-kill-word)
-		  ("C-<backspace>" . term-send-backward-kill-word)
-		  ("M-d" . term-send-forward-kill-word))))
-  (dolist (elem termkeys nil)
-    (add-to-list 'term-bind-key-alist elem)))
-(add-hook 'term-mode-hook (lambda ()
-			    (local-set-key (kbd "C-c C-j") 'term-line-mode)
-			    (local-set-key (kbd "C-c C-k") 'term-char-mode)))
-
-(defun ash-term-hooks ()
-  (setq term-default-bg-color (face-background 'default))
-  (setq term-default-fg-color (face-foreground 'default)))
-(defun term-colors-emacswiki ()
-  (setq term-default-bg-color (face-background 'default))
-  (setq term-default-fg-color "#dddd00"))
-;; (add-hook 'term-mode-hook 'ash-term-hooks)
-(add-hook 'term-mode-hook 'term-colors-emacswiki)
-
 
 ;;;_* ===== nav-mode =====
 
