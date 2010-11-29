@@ -260,6 +260,12 @@
 (require 'multi-term)
 (setq multi-term-program "/bin/bash")
 
+(let ((termkeys '(("M-DEL" . term-send-backward-kill-word)
+		  ("C-<backspace>" . term-send-backward-kill-word)
+		  ("M-d" . term-send-forward-kill-word))))
+  (dolist (elem termkeys nil)
+    (add-to-list 'term-bind-key-alist elem)))
+
 ;;;_* ===== nav-mode =====
 
 (add-to-list 'load-path (concat emacs-root "nav-mode"))

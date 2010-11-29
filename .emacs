@@ -185,11 +185,6 @@
 ;;   (before ansi-term-run-bash activate)
 ;;   (ad-set-arg 0 "/bin/bash"))
 
-(let ((termkeys '(("M-DEL" . term-send-backward-kill-word)
-		  ("C-<backspace>" . term-send-backward-kill-word)
-		  ("M-d" . term-send-forward-kill-word))))
-  (dolist (elem termkeys nil)
-    (add-to-list 'term-bind-key-alist elem)))
 (add-hook 'term-mode-hook '(lambda ()
 			     (local-set-key (kbd "C-c C-j") 'term-line-mode)
 			     (local-set-key (kbd "C-c C-k") 'term-char-mode)))
