@@ -197,45 +197,6 @@
 ;; (add-hook 'term-mode-hook 'ash-term-hooks)
 (add-hook 'term-mode-hook 'term-colors-emacswiki)
 
-;;;_* ===== Python-mode =====
-(setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
-(setq interpreter-mode-alist (cons '("python" . python-mode)
-				   interpreter-mode-alist))
-(autoload 'python-mode "python-mode" "Python editing mode." t)
-;; (load "python-mode")
-
-;;;_ . hook
-(add-hook 'python-mode-hook 
-	  '(lambda () 
-	     (local-set-key (kbd "C-c C-j") 'py-execute-line)
-	     (local-set-key (kbd "C-c C-p") 'py-execute-paragraph)))
-
-;;;_ . functions
-(defun py-mark-line ()
-  (interactive)
-  (end-of-line)
-  (push-mark (point))
-  (beginning-of-line)
-  (exchange-point-and-mark)
-  (py-keep-region-active))
-(defun py-execute-line (&optional async)
-  (interactive "P")
-  (save-excursion
-    (py-mark-line)
-    (py-execute-region (mark) (point) async)))
-(defun py-mark-paragraph ()
-  (interactive)
-  (forward-paragraph)
-  (push-mark (point))
-  (backward-paragraph)
-  (exchange-point-and-mark)
-  (py-keep-region-active))
-(defun py-execute-paragraph (&optional async)
-  (interactive "P")
-  (save-excursion
-    (py-mark-paragraph)
-    (py-execute-region (mark) (point) async)))
-
 ;;;_* ===== Winner mode =====
 
 (require 'winner)
@@ -351,9 +312,7 @@ one window."
  '(indicate-empty-lines t)
  '(nav-resize-frame-p t)
  '(ns-command-modifier (quote control))
- '(org-agenda-files nil)
- '(org-export-latex-date-format "")
- '(org-export-latex-image-default-option "width=20em")
+ ;;'(org-agenda-files nil)
  '(explicit-shell-file-name "/bin/bash")
  '(pop-up-windows nil)
  '(py-shell-switch-buffers-on-execute nil)

@@ -38,6 +38,47 @@
 
 (load "frame-resizing-functions")
 
+;;;_* ===== Python-mode =====
+(setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
+(setq interpreter-mode-alist (cons '("python" . python-mode)
+				   interpreter-mode-alist))
+(autoload 'python-mode "python-mode" "Python editing mode." t)
+(defun load-python ()
+  (interactive)
+  (load "python-mode"))
+
+;;;_ . hook
+(add-hook 'python-mode-hook 
+	  '(lambda () 
+	     (local-set-key (kbd "C-c C-j") 'py-execute-line)
+	     (local-set-key (kbd "C-c C-p") 'py-execute-paragraph)))
+
+;;;_ . functions
+(defun py-mark-line ()
+  (interactive)
+  (end-of-line)
+  (push-mark (point))
+  (beginning-of-line)
+  (exchange-point-and-mark)
+  (py-keep-region-active))
+(defun py-execute-line (&optional async)
+  (interactive "P")
+  (save-excursion
+    (py-mark-line)
+    (py-execute-region (mark) (point) async)))
+(defun py-mark-paragraph ()
+  (interactive)
+  (forward-paragraph)
+  (push-mark (point))
+  (backward-paragraph)
+  (exchange-point-and-mark)
+  (py-keep-region-active))
+(defun py-execute-paragraph (&optional async)
+  (interactive "P")
+  (save-excursion
+    (py-mark-paragraph)
+    (py-execute-region (mark) (point) async)))
+
 ;;;_* ===== R/ESS =====
 (add-to-list 'load-path (concat emacs-root "ess/lisp"))
 (global-set-key (kbd "C-c R") 'my-start-R-ESS);'my-ess-start-R)
@@ -113,7 +154,8 @@
 (define-key elscreen-map "r" 'elscreen-reset)
 
 (defun elscreen-reset ()
-  "Cycles through screens so that window configurations are reset (prevents flashing from redraw-frame? after each keystroke)"
+  "Cycles through screens so that window configurations are reset 
+(prevents flashing from redraw-frame[?] after each keystroke)"
   (interactive)
   ;; only happens when number of screens > 1
   (when (> (elscreen-get-number-of-screens) 1)
@@ -125,6 +167,9 @@
 
 (defadvice set-frame-size (after elscreen-set-frame-size activate)
   (elscreen-reset))
+
+;; (defadvice toggle-fullscreen (after elscreen-toggle-fullscreen activate)
+;;   (elscreen-reset))
 
 ;; (let ()
 ;;   (ad-disable-advice 'set-frame-size 'after 'elscreen-set-frame-size)

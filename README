@@ -1,4 +1,4 @@
-1) Download this repository to local machine. 
+1) Download this repository to local machine (to update, use ./pull)
 2) Edit ~/.emacs.d/local-settings.el
 
 .emacs will load ~/.emacs.d/local-settings.el at the top of .emacs
@@ -9,3 +9,4 @@ C-u 0 M-x byte-recompile-directory
 Only byte compile necessary files:
 M-x byte-recompile-directory
 
+To commit edits, use ./push.
