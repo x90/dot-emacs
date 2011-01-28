@@ -5,13 +5,15 @@
 ;;;_* ===== Environment variables =====
 
 (mapc (lambda (x)
-	(setenv (car x) (cdr x)))
-      '(("UCSD" . "/Users/stakahama/Documents/WORK/UCSD")
-	("stelguapo" . "stakahama@elguapo.ucsd.edu")
-	("stkanaloa" . "st@kanaloa.ucsd.edu")
-	("taccranger" . "tg804401@tg-login.ranger.tacc.teragrid.org")
-	("taccwork" . "/work/01159/tg804401")
-	("triton" . "stakahama@triton-login.sdsc.edu")))
+        (setenv (car x) (cdr x)))
+      (let ((elem (cons "UCSD" (concat (file-name-as-directory (getenv "HOME"))
+                                       "Documents/Work/UCSD"))))
+        (append (list elem)
+                '(("stelguapo" . "stakahama@elguapo.ucsd.edu")
+                  ("stkanaloa" . "st@kanaloa.ucsd.edu")
+                  ("taccranger" . "tg804401@tg-login.ranger.tacc.teragrid.org")
+                  ("taccwork" . "/work/01159/tg804401")
+                  ("triton" . "stakahama@triton-login.sdsc.edu")))))
 
 ;;;_* ===== Clojure =====
 ;; (require 'clojure-mode)
