@@ -31,7 +31,7 @@
       ;; select window system color
       (progn
 	(if (not winsys-color)
-	    (dolist (elem winsys-colorlist winsys-color)
+	    (dolist (elem winsys-colorlist-default winsys-color)
 	      (if (equal machine-name (car elem))
 		  (setq winsys-color (cdr elem)))))
 	;; change color
