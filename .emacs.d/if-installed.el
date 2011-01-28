@@ -81,7 +81,7 @@
 
 ;;;_* ===== R/ESS =====
 (add-to-list 'load-path (concat emacs-root "ess/lisp"))
-(global-set-key (kbd "C-c R") 'my-start-R-ESS);'my-ess-start-R)
+;; (global-set-key (kbd "C-c R") 'my-start-R-ESS);'my-ess-start-R)
 
 ;;;_ . recommended
 ;;
@@ -111,8 +111,8 @@
 	  '(lambda()
 	     ;;(local-set-key [(shift return)] 'my-ess-eval)
 	     (local-set-key (kbd "C-c d") 'ess-rdired)
-	     (local-set-key (kbd "C-c z") 'ess-setwd)
-	     (local-set-key (kbd "C-c s") 'ess-set-proc-name)
+	     ;; (local-set-key (kbd "C-c z") 'ess-setwd)
+	     ;; (local-set-key (kbd "C-c s") 'ess-set-proc-name)
 	     (local-set-key (kbd "C-c 9") 'add-column-offset)
 	     (local-set-key (kbd "C-c p") 'send-to-preview)
 	     (local-set-key (kbd "C-c l") 'point-and-compresspdf)
@@ -360,9 +360,31 @@
 (global-set-key "\C-c0" 'org-iswitchb)
 
 ;;;_ . my customizations for export logbook entries
+(defvar org-logbook-mode-p nil)
+(defvar org-default-vars nil)
+(load "org-logbook-mode")
 (load "org-latex-hacks")
 ;; (load "org-latex-hacked")
-;;(disable-advice-org-export-latex-make-header)
+
+;;;_ . defaults
+
+(defun org-get-defaults ()
+  (let ((vars '(org-agenda-files
+	       org-format-latex-options
+	       org-export-latex-date-format
+	       org-export-latex-image-default-option
+	       org-export-latex-classes)))
+    (mapcar (lambda (x) (cons x (eval x))) vars)))
+
+(defun org-restore-defaults (default-vars)
+  (interactive)
+  (mapc (lambda (x) 
+	  (set (car x) (cdr x)))
+	default-vars))
+
+(setq org-default-vars (org-get-defaults))
+;; restore with 
+;; (org-restore-defaults org-default-vars)
 
 ;;;_ . further customizations
 (add-hook 'org-mode-hook

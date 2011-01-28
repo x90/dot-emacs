@@ -462,3 +462,40 @@
 ;; 		  (place-chars expr-chars-full))
 ;; 	      ;; search backward
 ;; 		(place-chars expr-chars-partial))))))))
+;;;_* ===== ESS =====
+
+
+(defun my-start-R-ESS (&optional arg)
+  (interactive "P")
+  (let ((this-buffer (buffer-name))
+	(r-proc nil)
+	(r-buffer nil))
+    ;;{{{
+
+    ;; the notany expression originally was
+    ;; (not (member "*R*" (mapcar (function buffer-name) (buffer-list))))
+
+    ;;}}}
+    (if (or (notany '(lambda (x) (string-match "*R" (buffer-name x))) 
+		    (buffer-list))
+	    arg)
+	(progn
+	  (condition-case nil
+	      (delete-other-windows-vertically)
+	    (error (delete-other-windows)))
+	  (R)
+	  (setq r-proc (buffer-name))
+	  (setq r-buffer 
+		(concat r-proc 
+			(format "<%s>" (file-name-sans-extension this-buffer))))
+		;; (replace-regexp-in-string 
+		;;  "\\*$" 
+		;;  (format "<%s>*" (file-name-sans-extension this-buffer))
+		;;  r-proc))
+	  (rename-buffer r-buffer)
+	  (split-window-vertically)
+	  (switch-to-buffer this-buffer)
+	  (enlarge-window 10)
+	  (setq ess-current-process-name 
+		(replace-regexp-in-string "*" "" r-proc)))
+      (message "An instance of R is already running"))))

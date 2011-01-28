@@ -1,44 +1,69 @@
+;;;_* keybindings
+
+(add-hook 'ess-mode-hook
+	  '(lambda()
+	     (local-set-key (kbd "C-c R") 'ess-start-R)
+	     (local-set-key (kbd "C-c s") 'ess-set-proc-name)
+	     (local-set-key (kbd "C-c z") 'ess-setwd)))
+
 ;;;_* general
+
 (defadvice ess-eval-region
   (after ess-eval-region-deactivate-mark activate)
   "Deactivate mark after executing region 
    (region is preserved after mark is deactivated)"
   (deactivate-mark))
 
-(defun my-start-R-ESS (&optional arg)
+(defun ess-start-R (&optional arg)
+  "Runs R interpreter in inferior ESS buffer. Usage: if an R
+  script open, e.g., 'script.r', invoke ess-start-R when this
+  script buffer is active. If an inferior ESS buffer already
+  exists, must use prefix key (e.g., if ess-start-R is bound to
+  `C-c R`, the first instance is invoked by `C-c R`; subsequent
+  inferior ESS buffers invoked with `C-u C-c R` -- otherwise `C-c
+  R` will switch to top exising inferior ESS buffer). If
+  'script.r' is the name of the R script, the buffer will be
+  named *R<script.r>* or *R:2<script.r>*, depending on existing R
+  processes.  Inspired by `my-ess-start-R` function in ESS Emacs
+  Wiki <http://www.emacswiki.org/emacs/EmacsSpeaksStatistics> and
+  implemented to mimic behavior of emacs inferior shell."
   (interactive "P")
-  (let ((this-buffer (buffer-name))
-	(r-proc nil)
-	(r-buffer nil))
-    ;;{{{
-
-    ;; the notany expression originally was
-    ;; (not (member "*R*" (mapcar (function buffer-name) (buffer-list))))
-
-    ;;}}}
-    (if (or (notany '(lambda (x) (string-match "*R" (buffer-name x))) 
-		    (buffer-list))
-	    arg)
-	(progn
+  (flet ((find-R-buffers () ;; return top R buffer name or nil
+			 (let ((buflist (reverse (buffer-list)))
+			       (x nil)
+			       (out nil))
+			   (dolist (x buflist out)
+			     (let ((bufname (buffer-name x)))
+			       (if (string-match "*R" bufname)
+				   (setq out bufname)))))))
+    (let ((this-buffer (buffer-name))
+	  (r-proc nil)
+	  (r-buffer nil))
+      ;; function body:
+      (setq r-buffer (find-R-buffers))
 	  (condition-case nil
 	      (delete-other-windows-vertically)
 	    (error (delete-other-windows)))
-	  (R)
-	  (setq r-proc (buffer-name))
-	  (setq r-buffer 
-		(concat r-proc 
-			(format "<%s>" (file-name-sans-extension this-buffer))))
-		;; (replace-regexp-in-string 
-		;;  "\\*$" 
-		;;  (format "<%s>*" (file-name-sans-extension this-buffer))
-		;;  r-proc))
-	  (rename-buffer r-buffer)
+	  (if (or (not r-buffer) arg)
+	      (progn
+		(R)
+		(setq r-proc (buffer-name))
+		(setq r-buffer 
+		      (concat r-proc 
+			      (format "<%s>" 
+				      (file-name-sans-extension 
+				       this-buffer))))
+		  (rename-buffer r-buffer))
+	      (switch-to-buffer r-buffer))
 	  (split-window-vertically)
 	  (switch-to-buffer this-buffer)
 	  (enlarge-window 10)
 	  (setq ess-current-process-name 
-		(replace-regexp-in-string "*" "" r-proc)))
-      (message "An instance of R is already running"))))
+		(if r-proc
+		    (replace-regexp-in-string "\\*" "" r-proc)
+		  (replace-regexp-in-string "\\*\\(R[:0-9]*\\)\\*(<.+>)?"
+					    "\\1" 
+					    r-buffer))))))
 
 (defun ess-set-proc-name (R-name)
  (interactive "sEnter R process name: ")
@@ -94,7 +119,8 @@
 				   (line-beginning-position)))
 		      (string-match "dev\\.off()" (buffer-substring-no-properties pos1 pos2))))
 		  (save-excursion ;; point after dev.off()
-		    (search-backward-regexp "[^a-zA-Z0-9]pdf[(,].*\"\\(.+\\.pdf\\)\".*)")
+		    ;; (search-backward-regexp "[^a-zA-Z0-9]pdf[(,].*\"\\(.+\\.pdf\\)\".*)")
+		    (search-backward-regexp "^.*pdf[(,].*\"\\(.+\\.pdf\\)\".*)")
 		    (match-string-no-properties 1))
 		(save-excursion ;; point over pdf name
 		  (search-backward "\"")
