@@ -15,21 +15,25 @@
       (load "if-installed")))
 
 ;;;_* Color 
-(let ((winsys-colorlist 
+(if (equal color-theme-local 'color-theme-tangotango)
+    (load "color-theme-tangotango")
+  (if (equal color-theme-local 'color-theme-zenburn)
+      (load "zenburn")))
+(let ((winsys-colorlist-default
        (list '("turtle" . color-theme-deep-blue)
 	     '("elguapo" . color-theme-charcoal-black)))
       (out 'color-theme-standard)
       (terminal-color 'color-theme-standard)
       (machine-name machine-name)
-      (winsys-color nil)
+      (winsys-color color-theme-local)
       (elem nil))
   (if window-system
+      ;; select window system color
       (progn
-	;; select window system color
-	(setq winsys-color
-	      (dolist (elem winsys-colorlist winsys-color)
-		(if (equal machine-name (car elem))
-		    (setq winsys-color (cdr elem)))))
+	(if (not winsys-color)
+	    (dolist (elem winsys-colorlist winsys-color)
+	      (if (equal machine-name (car elem))
+		  (setq winsys-color (cdr elem)))))
 	;; change color
 	(eval (list winsys-color)))))
     ;; (eval (list terminal-color))))

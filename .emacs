@@ -15,6 +15,7 @@
 (defvar emacs-root)
 (defvar account-username)
 (defvar machine-name)
+(defvar color-theme-local nil)
 
 ;;;_ . --- Machine-specific customizations ---
 
