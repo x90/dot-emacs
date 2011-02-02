@@ -2,7 +2,7 @@
 (load-library "g")
 (setq g-user-email "stakahama@gmail.com")
 ;; (gcal-emacs-calendar-setup)
-(if (= emacs-major-version 23)
+(if (>= emacs-major-version 23)
 	(require 'w3m-ems)
   (require 'w3m))
 ;;(require 'w3m-load)
