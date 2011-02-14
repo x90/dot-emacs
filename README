@@ -1,7 +1,11 @@
 1) Download this repository to local machine (to update, use ./pull)
-2) Edit ~/.emacs.d/local-settings.el
+2) Create or edit ~/.emacs.d/local-settings.el, which accepts values for the following custom variables: account-username, machine-name, emacs-root, color-theme-local. For instance,
+    (setq account-username "stakahama")
+    (setq machine-name "turtle")
+    (setq emacs-root "/Users/stakahama/.emacs.d/")
+    (setq color-theme-local 'color-theme-tangotango)
 
-.emacs will load ~/.emacs.d/local-settings.el at the top of .emacs
+.emacs will load ~/.emacs.d/local-settings.el at the top of .emacs (after definition of these custom variables)
 
 Byte compile for first time ("0" prefix suppresses prompting for each file):
 C-u 0 M-x byte-recompile-directory

@@ -91,6 +91,10 @@
 ;; (setq show-paren-delay 0.0)
 ;; (setq visible-bell t)
 ;; (require 's-region)
+(when (eq system-type 'gnu/linux)
+  ;; make emacs use the clipboard
+  (setq x-select-enable-clipboard t)
+  (setq interprogram-paste-function 'x-cut-buffer-or-selection-value))
 
 ;;;_ . ===== Backups and autosaves =====
 
