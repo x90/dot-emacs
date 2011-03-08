@@ -7,5 +7,5 @@ rsync -arvP --exclude='*.elc' --exclude='.saves-*~' --exclude='.git' --delete  ~
 rsync -avP ~/.emacs .
 git add .
 git commit -a -m $0
-git push git@github.com:stakahama/dot-emacs.git master
-
+##git push git@github.com:stakahama/dot-emacs.git master
+git push origin
