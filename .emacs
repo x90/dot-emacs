@@ -266,11 +266,6 @@ one window."
 ;;    (interactive)
 ;;    (flyspell-mode 1))
 
-;;;_* ===== Emacs server start =====
-(condition-case nil
-    (server-start)
-  (error nil))
-
 ;;;_* ===== Full screen =====
 
 (defun toggle-fullscreen (&optional f)
@@ -336,3 +331,14 @@ one window."
 ;;;_* ===== Load extras =====
 
 (load "emacs-local.el")
+
+;;;_* ===== Emacs server start =====
+(condition-case nil
+    (server-start)
+  (error nil))
+;; (if (file-exists-p
+;;  (concat (getenv "TMPDIR") "emacs"
+;;          (number-to-string
+;;           (user-real-uid)) "/server"))
+;;     nil 
+;;   (server-start))
