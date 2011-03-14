@@ -270,6 +270,9 @@
 (add-to-list 'load-path (concat emacs-root "emacspeak/lisp/g-client"))
 (load "gblogger.el")
 
+;; st
+(load "websc.el")
+
 ;;;_* ===== nXML mode and html functions =====
 (add-to-list 'load-path (concat emacs-root "nxml-mode"))
 ;; (load "~/.emacs.d/nxml-mode-20041004/rng-auto.el")
