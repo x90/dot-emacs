@@ -1,3 +1,11 @@
+(defun kill-other-buffers ()
+    "Kill all other buffers."
+    ;; from stackoverflow
+    (interactive)
+    (mapc 'kill-buffer 
+          (delq (current-buffer) 
+                (remove-if-not 'buffer-file-name (buffer-list)))))
+
 (defun my-kill-region ()
   (interactive)
   ;; from stackoverflow
