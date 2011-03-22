@@ -11,7 +11,10 @@
     ;; create directory
     (when (not (file-exists-p dirname) )
       (mkdir dirname t))
-    (labels ((in-folder (filename) (concat dirname filename)))
+    (labels ((in-folder (filename) (concat dirname filename))
+	     (maybe (matchval) 
+		    (let ((val (string-to-int matchval)))
+		      (if (= val 0) matchval (format "%04d" val)))))
       ;; side effect is function creation to which local dirname is attached
       (defun extract-pdf-links ()
 	(interactive)
@@ -21,7 +24,7 @@
 	  (setq ix 0)
 	  (while (<= (point) (point-max));; (< ix 3)
 	    ;; wait
-	    (sleep-for 10)
+	    ;;(sleep-for 10)
 	    ;; search for term
 	    (setq testvar (search-forward "Download PDF" nil t))
 	    ;; get link information
@@ -29,16 +32,17 @@
 	    ;; get page numbers
 	    (setq local-file
 		  (let ((basename (file-name-nondirectory url-file)))
-		    (if (or (string-match "front\\-matter" basename)
-			    (string-match "back\\-matter" basename))
-			(in-folder basename)
-		      (save-excursion
-			(re-search-backward "\\* \\([0-9]+\\)\\-\\([0-9]+\\)" nil t)
-			(setq local-file 
-			      (in-folder (format "pp%04d-%04d_%s.pdf" 
-						 (string-to-int (match-string-no-properties 1))
-						 (string-to-int (match-string-no-properties 2))
-						 (file-name-sans-extension basename))))))))
+		    ;; (if (or (string-match "front\\-matter" basename)
+		    ;; 	    (string-match "back\\-matter" basename))
+		    ;; 	(in-folder basename)
+		    (save-excursion
+		      (re-search-backward "\\* \\([0-9]+\\|I\\)\\-\\([0-9]+\\|[IXV]+\\)" nil t)
+		      (setq local-file 
+			    (in-folder (format "pp%s-%s_%s.pdf" 
+					       (maybe (match-string-no-properties 1))
+					       (maybe (match-string-no-properties 2))
+					       (file-name-sans-extension basename)))))))
+		  ;; )
 	    ;; copy file
 	    (when (not (file-exists-p local-file))
 	      (princ (format "(w3m-download \"%s\" \"%s\")\n" url-file local-file))
@@ -47,3 +51,4 @@
 		('error (message (format "Caught exception: [%s]" ex)))))
 	      ;; (sleep-for 20)) ;; doesn't work?
 	    (setq ix (1+ ix))))))))
+
