@@ -151,6 +151,7 @@
 (global-set-key (kbd "<f8>"    ) 'elscreen-create)
 (global-set-key (kbd "S-<f8>"  ) 'elscreen-kill)
 ;;(global-set-key (kbd "<f12>"  ) 'elscreen-reset)
+(define-key elscreen-map "f" 'elscreen-find-file)
 (define-key elscreen-map "r" 'elscreen-reset)
 
 (defun elscreen-reset ()
