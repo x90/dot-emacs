@@ -19,12 +19,12 @@
       (defun extract-pdf-links ()
 	(interactive)
 	;; local variables
+	;; (setq w3m-async-exec nil)
 	(let (ix url-file local-file ex testvar)
 	  (goto-char (point-min))
 	  (setq ix 0)
 	  (while (<= (point) (point-max));; (< ix 3)
 	    ;; wait
-	    ;;(sleep-for 10)
 	    ;; search for term
 	    (setq testvar (search-forward "Download PDF" nil t))
 	    ;; get link information
@@ -48,7 +48,7 @@
 	      (princ (format "(w3m-download \"%s\" \"%s\")\n" url-file local-file))
 	      (condition-case ex
 		  (w3m-download url-file local-file)
-		('error (message (format "Caught exception: [%s]" ex)))))
-	      ;; (sleep-for 20)) ;; doesn't work?
+		('error (message (format "Caught exception: [%s]" ex))))
+	      (sleep-for 10)) ;; doesn't work?
 	    (setq ix (1+ ix))))))))
 

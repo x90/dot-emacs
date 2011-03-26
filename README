@@ -4,6 +4,9 @@
     (setq machine-name "turtle")
     (setq emacs-root "/Users/stakahama/.emacs.d/")
     (setq color-theme-local 'color-theme-tangotango)
+Also, additional lines for gblogger
+    (setq g-user-email "me@gmail.com")
+    (setq g-blog-address "http://www.blogger.com/feeds/012345/posts/default")
 
 .emacs will load ~/.emacs.d/local-settings.el at the top of .emacs (after definition of these custom variables)
 
