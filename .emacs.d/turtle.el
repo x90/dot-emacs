@@ -79,7 +79,10 @@
 ;; (add-hook 'matlab-shell-mode-hook 'my-matlab-shell-mode-hook)
 
 ;;(setq matlab-shell-command "/Applications/MATLAB_R2008a/bin/matlab")
-(setq matlab-shell-command "/Applications/MATLAB_R2010a.app/bin/matlab")
+(setq matlab-shell-command (if (eq system-type 'darwin)
+			       "/Applications/MATLAB_R2010a.app/bin/matlab"
+			     (if (eq system-type 'gnu/linux)
+				 "/usr/local/bin/matlab")))
 (setq matlab-shell-command-switches '("-nojvm" "-nosplash"))
 
 ;; defadvice is awesome
