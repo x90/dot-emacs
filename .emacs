@@ -16,6 +16,7 @@
 (defvar account-username)
 (defvar machine-name)
 (defvar color-theme-local nil)
+(defvar bin-path nil)
 
 ;;;_ . --- Machine-specific customizations ---
 
@@ -171,10 +172,16 @@
 	     (local-set-key (kbd "C-c p") 'copy-pwd)
 	     (local-set-key (kbd "C-c c") 'shell-mode-change-directory)
 	     (local-set-key (kbd "C-c d") 'dirs)))
+(add-hook 'eshell-mode-hook
+	  '(lambda()
+	     (local-set-key (kbd "C-c p") 'copy-pwd)
+	     (local-set-key (kbd "C-c c") 'shell-mode-change-directory)))
 
 (defun shell-mode-change-directory (&optional arg)
   (interactive "P")
-  (insert (concat "cd " (copy-pwd arg))))
+  (goto-char (point-max))
+  (insert (concat "cd " (copy-pwd arg)))
+  (eshell-send-input))
 
 (when (eq system-type 'cygwin)
   (defun cygwin-shell ()

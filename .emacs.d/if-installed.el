@@ -43,9 +43,11 @@
 (setq interpreter-mode-alist (cons '("python" . python-mode)
 				   interpreter-mode-alist))
 (autoload 'python-mode "python-mode" "Python editing mode." t)
-(defun load-python ()
+(defun load-python (&optional arg)
   (interactive)
-  (load "python-mode"))
+  (load "python-mode" t)
+  (if arg (python-mode)))
+(load-python)
 
 ;;;_ . hook
 (add-hook 'python-mode-hook 
