@@ -9,7 +9,8 @@
 ;;;_* Load lisp files
 (load "common")
 (if (or (equal machine-name "turtle")
-	  (equal machine-name "elguapo"))
+	(equal machine-name "elguapo")
+	(equal machine-name "clamshell"))
     (progn
       (load "turtle")
       (load "if-installed")))

@@ -170,18 +170,24 @@
 (add-hook 'shell-mode-hook
 	  '(lambda()
 	     (local-set-key (kbd "C-c p") 'copy-pwd)
-	     (local-set-key (kbd "C-c c") 'shell-mode-change-directory)
+	     (local-set-key (kbd "C-c c") (shell-mode-change-directory))
 	     (local-set-key (kbd "C-c d") 'dirs)))
 (add-hook 'eshell-mode-hook
 	  '(lambda()
 	     (local-set-key (kbd "C-c p") 'copy-pwd)
-	     (local-set-key (kbd "C-c c") 'shell-mode-change-directory)))
+	     (local-set-key (kbd "C-c c") (shell-mode-change-directory))))
 
-(defun shell-mode-change-directory (&optional arg)
-  (interactive "P")
-  (goto-char (point-max))
-  (insert (concat "cd " (copy-pwd arg)))
-  (eshell-send-input))
+(defun shell-mode-change-directory ()
+  (lexical-let ((send-input-fn 
+		 (if (eq major-mode 'shell-mode)
+		     'comint-send-input
+		   (if (eq major-mode 'eshell-mode)
+		       'eshell-send-input))))
+  (lambda (&optional arg)
+    (interactive "P")
+    (goto-char (point-max))
+    (insert (concat "cd " (copy-pwd arg)))
+    (eval (list send-input-fn)))))
 
 (when (eq system-type 'cygwin)
   (defun cygwin-shell ()
