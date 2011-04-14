@@ -35,28 +35,35 @@
 			   (dolist (x buflist out)
 			     (let ((bufname (buffer-name x)))
 			       (if (string-match "*R" bufname)
-				   (setq out bufname)))))))
-    (let ((this-buffer (buffer-name))
-	  (r-proc nil)
-	  (r-buffer nil))
-      ;; function body:
-      (setq r-buffer (find-R-buffers))
-	  (condition-case nil
-	      (delete-other-windows-vertically)
-	    (error (delete-other-windows)))
-	  (if (or (not r-buffer) arg)
-	      (progn
-		(R)
-		(setq r-proc (buffer-name))
-		(setq r-buffer 
-		      (concat r-proc 
-			      (format "<%s>" 
-				      (file-name-sans-extension 
-				       this-buffer))))
-		  (rename-buffer r-buffer))
-	      (switch-to-buffer r-buffer))
-	  (split-window-vertically)
-	  (switch-to-buffer this-buffer)
+				   (setq out bufname))))))
+	 (is-wide-p ()
+		    (let ((thres 120))
+		      (> (frame-width) thres))))
+	 (let ((this-buffer (buffer-name))
+	       (r-proc nil)
+	       (r-buffer nil))
+	   ;; function body:
+	   (setq r-buffer (find-R-buffers))
+	   (if (is-wide-p) 
+	       (delete-other-windows)
+	     (condition-case nil
+		 (delete-other-windows-vertically)
+	       (error (delete-other-windows))))
+	   (if (or (not r-buffer) arg)
+	       (progn
+		 (R)
+		 (setq r-proc (buffer-name))
+		 (setq r-buffer 
+		       (concat r-proc 
+			       (format "<%s>" 
+				       (file-name-sans-extension 
+					this-buffer))))
+		 (rename-buffer r-buffer))
+	     (switch-to-buffer r-buffer))
+	   (if (is-wide-p) 
+	       (split-window-horizontally)
+	     (split-window-vertically))
+	   (switch-to-buffer this-buffer)
 	  (enlarge-window 10)
 	  (setq ess-current-process-name 
 		(if r-proc
