@@ -20,6 +20,24 @@
     (load "color-theme-tangotango")
   (if (equal color-theme-local 'color-theme-zenburn)
       (load "zenburn")))
+;; (let ((winsys-colorlist-default
+;;        (list '("turtle" . color-theme-deep-blue)
+;; 	     '("elguapo" . color-theme-charcoal-black)))
+;;       (out 'color-theme-standard)
+;;       (terminal-color 'color-theme-standard)
+;;       (machine-name machine-name)
+;;       (winsys-color color-theme-local)
+;;       (elem nil))
+;;   (if window-system
+;;       ;; select window system color
+;;       (progn
+;; 	(if (not winsys-color)
+;; 	    (dolist (elem winsys-colorlist-default winsys-color)
+;; 	      (if (equal machine-name (car elem))
+;; 		  (setq winsys-color (cdr elem)))))
+;; 	;; change color
+;; 	(eval (list winsys-color)))))
+;;     ;; (eval (list terminal-color))))
 (let ((winsys-colorlist-default
        (list '("turtle" . color-theme-deep-blue)
 	     '("elguapo" . color-theme-charcoal-black)))
@@ -28,13 +46,6 @@
       (machine-name machine-name)
       (winsys-color color-theme-local)
       (elem nil))
-  (if window-system
-      ;; select window system color
-      (progn
-	(if (not winsys-color)
-	    (dolist (elem winsys-colorlist-default winsys-color)
-	      (if (equal machine-name (car elem))
-		  (setq winsys-color (cdr elem)))))
-	;; change color
-	(eval (list winsys-color)))))
-    ;; (eval (list terminal-color))))
+  (if (and window-system color-theme-local)
+      ;; change color
+      (eval (list color-theme-local))))
