@@ -37,7 +37,7 @@
 			       (if (string-match "*R" bufname)
 				   (setq out bufname))))))
 	 (is-wide-p ()
-		    (let ((thres 120))
+		    (let ((thres 160))
 		      (> (frame-width) thres))))
 	 (let ((this-buffer (buffer-name))
 	       (r-proc nil)
@@ -82,6 +82,15 @@
   (ess-eval-linewise (format "setwd(\"%s\")" 
 			     (file-name-directory (buffer-file-name)))
 		     nil nil nil 'wait))
+
+(defun ess-inferior-scrub-name (&optional arg)
+  "remove file name from inferior ESS buffer name"
+  (interactive "P")
+  (let ((iESS-buffer-name (buffer-name)))
+    (if (string-match "\\*R" iESS-buffer-name)
+	(rename-buffer 
+	 (replace-regexp-in-string "<.+>" "" "*R*<read2_2011-05>"))
+      (message "Not iESS buffer"))))
 
 ;;;_* send to ess-line (help)
 
