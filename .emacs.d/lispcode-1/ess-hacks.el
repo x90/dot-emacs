@@ -23,27 +23,41 @@
   inferior ESS buffers invoked with `C-u C-c R` -- otherwise `C-c
   R` will switch to top exising inferior ESS buffer). If
   'script.r' is the name of the R script, the buffer will be
-  named *R<script.r>* or *R:2<script.r>*, depending on existing R
+  named *R<script>* or *R:2<script>*, depending on existing R
   processes.  Inspired by `my-ess-start-R` function in ESS Emacs
   Wiki <http://www.emacswiki.org/emacs/EmacsSpeaksStatistics> and
   implemented to mimic behavior of emacs inferior shell."
   (interactive "P")
-  (flet ((find-R-buffers () ;; return top R buffer name or nil
-			 (let ((buflist (reverse (buffer-list)))
-			       (x nil)
-			       (out nil))
-			   (dolist (x buflist out)
-			     (let ((bufname (buffer-name x)))
-			       (if (string-match "*R" bufname)
-				   (setq out bufname))))))
+  ;; local functions
+  (flet ((find-R-buffers () 
+	  ;; return top R buffer name or nil
+	  (let ((buflist (reverse (buffer-list)))
+		(x nil))
+	    (dolist (x buflist)
+	      (let ((bufname (buffer-name x)))
+		(if (string-match "\\*R" bufname)
+		    (return bufname))))))
+	 (find-matching-R-buffer (this-buffer) 
+	  ;; return matching R buffer name
+	  (let ((buflist (reverse (buffer-list)))
+		(patt (format "\\*R\\([:][0-9]+\\)?\\*<%s>" 
+			      (file-name-sans-extension this-buffer)))
+		(bufname nil)
+		(x nil))
+	    (dolist (x buflist)
+	      (setq bufname (buffer-name x))
+	      (if (string-match patt bufname)
+		  (return bufname)))))
 	 (is-wide-p ()
-		    (let ((thres 160))
-		      (> (frame-width) thres))))
+	  (let ((thres 160))
+	    (> (frame-width) thres))))
+    ;; local variables:
 	 (let ((this-buffer (buffer-name))
 	       (r-proc nil)
 	       (r-buffer nil))
 	   ;; function body:
-	   (setq r-buffer (find-R-buffers))
+	   (setq r-buffer (find-matching-R-buffer this-buffer))
+	   ;; (setq r-buffer (find-R-buffers))
 	   (if (is-wide-p) 
 	       (delete-other-windows)
 	     (condition-case nil

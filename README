@@ -18,4 +18,4 @@ C-u 0 M-x byte-recompile-directory
 Only byte compile necessary files:
 M-x byte-recompile-directory
 
-To commit edits, use ./push.
+To commit edits, use ./push "message".
