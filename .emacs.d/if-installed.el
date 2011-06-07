@@ -311,9 +311,14 @@
 (require 'multi-term)
 (setq multi-term-program "/bin/bash")
 
+(defun term-mode-change-directory ())
+(fset 'term-mode-change-directory (shell-mode-change-directory 'term-mode))
 (let ((termkeys '(("M-DEL" . term-send-backward-kill-word)
 		  ("C-<backspace>" . term-send-backward-kill-word)
-		  ("M-d" . term-send-forward-kill-word))))
+		  ("M-d" . term-send-forward-kill-word)
+		  ("C-c C-j" . term-line-mode)
+		  ("C-c C-k" . term-char-mode)
+		  ("C-c c" . term-mode-change-directory))))
   (dolist (elem termkeys nil)
     (add-to-list 'term-bind-key-alist elem)))
 

@@ -177,12 +177,16 @@
 	     (local-set-key (kbd "C-c p") 'copy-pwd)
 	     (local-set-key (kbd "C-c c") (shell-mode-change-directory))))
 
-(defun shell-mode-change-directory ()
-  (lexical-let ((send-input-fn 
-		 (if (eq major-mode 'shell-mode)
-		     'comint-send-input
-		   (if (eq major-mode 'eshell-mode)
-		       'eshell-send-input))))
+(defun shell-mode-change-directory (&optional arg)
+  (lexical-let (send-input-fn)
+    (setq arg (if arg arg major-mode))
+    (setq send-input-fn
+	  (if (eq arg 'shell-mode)
+	      'comint-send-input
+	    (if (eq arg 'eshell-mode)
+		'eshell-send-input
+	      (if (eq arg 'term-mode)
+		  'term-send-input))))
   (lambda (&optional arg)
     (interactive "P")
     (goto-char (point-max))
@@ -203,9 +207,9 @@
 ;;   (before ansi-term-run-bash activate)
 ;;   (ad-set-arg 0 "/bin/bash"))
 
-(add-hook 'term-mode-hook '(lambda ()
-			     (local-set-key (kbd "C-c C-j") 'term-line-mode)
-			     (local-set-key (kbd "C-c C-k") 'term-char-mode)))
+;; (add-hook 'term-mode-hook '(lambda ()
+;; 			     (local-set-key (kbd "C-c C-j") 'term-line-mode)
+;; 			     (local-set-key (kbd "C-c C-k") 'term-char-mode)))
 (defun ash-term-hooks ()
   (setq term-default-bg-color (face-background 'default))
   (setq term-default-fg-color (face-foreground 'default)))
