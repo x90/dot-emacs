@@ -158,16 +158,16 @@
 	  (r-expression "with(list(exec=\"%s\",textline='%s'),{expr <- parse(text=textline)[[1]]; filename <- if( !is.null(expr$file) ) expr$file else {for(e in as.list(expr)) if(is.character(e)&&grepl(\"%s\",e)||is.call(e)&&any(sapply(e[1:2],`==`,quote(sprintf)))) break; e}; if(file.exists(filename)) system(paste(exec,filename)) else \"no match\"})")
 	  exec matched-expression)
       (setq exec (if arg "~/bin/compresspdf"
-		   (if (eq system-type 'darwin) "open" 
+		   (if (eq system-type 'darwin) "open -a \\\"Preview\\\"" 
 		     (if (eq system-type 'gnu/linux) "gnome-open"))))
       (setq matched-expression
 	    (let (x tmp out)
 	      (dolist (x devices out)
 		(if (and (not tmp) (setq tmp (searchback x)))
 		    (setq out (check-lastchar (strip-newlines tmp)))))))
-      (print (format r-expression exec matched-expression r-regexpr-pattern)))))
-      ;; (ess-eval-linewise (format r-expression exec matched-expression r-regexpr-pattern)
-      ;; 			 nil nil nil 'wait))))
+      ;; (print (format r-expression exec matched-expression r-regexpr-pattern)))))
+      (ess-eval-linewise (format r-expression exec matched-expression r-regexpr-pattern)
+      			 nil nil nil 'wait))))
 
 ;;;_* OS X (PDF functions)
 (defun operate-on-pdf (fn &optional arg)
