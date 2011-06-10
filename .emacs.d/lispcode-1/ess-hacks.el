@@ -2,6 +2,9 @@
 
 (add-hook 'ess-mode-hook
 	  '(lambda()
+	     (local-set-key (kbd "C-c h") 'ess-seek-help)
+	     (local-set-key (kbd "C-c a") 'ess-seek-args)
+	     (local-set-key (kbd "C-c p") 'ess-op-fig)
 	     (local-set-key (kbd "C-c R") 'ess-start-R)
 	     (local-set-key (kbd "C-c s") 'ess-set-proc-name)
 	     (local-set-key (kbd "C-c z") 'ess-setwd)))
@@ -133,6 +136,38 @@
 (defun ess-seek-args () 
   (interactive)
   (ess-send-to-function "args"))
+
+(defun ess-op-fig (&optional arg)
+  "possibly rewrite r-expression as R function to load in .Rprofile"
+  (interactive "P")
+  (flet ((searchback (dev) 
+		     (save-excursion ;; point after dev.off()
+		       (if (search-backward-regexp (format "^[ ]*\\(%s(.+[)|\n]\\)" dev) nil t)
+			   (match-string-no-properties 1)
+			 nil)))
+	 (strip-newlines (line)  
+			 (replace-regexp-in-string "\n" "" line))
+	 (check-lastchar (line)      ;; need in case entire expression is not matched
+			 (let* ((nchar-1 (- (length line) 1))
+				(lastchar (substring line nchar-1)))
+			   (if (equal lastchar ",") 
+			       (concat (substring line 0 nchar-1) ")")
+			     line))))
+    (let ((devices '("pdf" "png" "trellice.device" "dev.copy" "bmp" "jpeg" "tiff" "gif"))
+	  (r-regexpr-pattern ".+\\\\.(pdf|png|bmp|jpg|tiff|gif)")
+	  (r-expression "with(list(exec=\"%s\",textline='%s'),{expr <- parse(text=textline)[[1]]; filename <- if( !is.null(expr$file) ) expr$file else {for(e in as.list(expr)) if(is.character(e)&&grepl(\"%s\",e)||is.call(e)&&any(sapply(e[1:2],`==`,quote(sprintf)))) break; e}; if(file.exists(filename)) system(paste(exec,filename)) else \"no match\"})")
+	  exec matched-expression)
+      (setq exec (if arg "~/bin/compresspdf"
+		   (if (eq system-type 'darwin) "open" 
+		     (if (eq system-type 'gnu/linux) "gnome-open"))))
+      (setq matched-expression
+	    (let (x tmp out)
+	      (dolist (x devices out)
+		(if (and (not tmp) (setq tmp (searchback x)))
+		    (setq out (check-lastchar (strip-newlines tmp)))))))
+      (print (format r-expression exec matched-expression r-regexpr-pattern)))))
+      ;; (ess-eval-linewise (format r-expression exec matched-expression r-regexpr-pattern)
+      ;; 			 nil nil nil 'wait))))
 
 ;;;_* OS X (PDF functions)
 (defun operate-on-pdf (fn &optional arg)

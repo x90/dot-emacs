@@ -335,7 +335,7 @@ one window."
  ;; '(org-export-latex-image-default-option "width=20em")
  '(pop-up-windows nil)
  '(py-shell-switch-buffers-on-execute nil)
- '(same-window-buffer-names (quote ("*shell*" "*mail*" "*inferior-lisp*" "*ielm*" "*scheme*" "*Help*" "*Async Shell Command*" "*grep*" "*rgrep*" "*Directory*")))
+ '(same-window-buffer-names (quote ("*shell*" "*shell*<2>" "*shell*<2>" "*shell*<3>" "*shell*<4>" "*shell*<5>""*mail*" "*inferior-lisp*" "*ielm*" "*scheme*" "*Help*" "*Async Shell Command*" "*grep*" "*rgrep*" "*Directory*")))
  '(warning-suppress-types (quote ((server)))))
 
 (custom-set-faces

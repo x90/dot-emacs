@@ -113,13 +113,7 @@
 	  '(lambda()
 	     ;;(local-set-key [(shift return)] 'my-ess-eval)
 	     (local-set-key (kbd "C-c d") 'ess-rdired)
-	     ;; (local-set-key (kbd "C-c z") 'ess-setwd)
-	     ;; (local-set-key (kbd "C-c s") 'ess-set-proc-name)
-	     (local-set-key (kbd "C-c 9") 'add-column-offset)
-	     (local-set-key (kbd "C-c p") 'send-to-preview)
-	     (local-set-key (kbd "C-c l") 'point-and-compresspdf)
-	     (local-set-key (kbd "C-c h") 'ess-seek-help)
-	     (local-set-key (kbd "C-c a") 'ess-seek-args)))
+	     (local-set-key (kbd "C-c 9") 'add-column-offset)))
 
 (add-hook 'inferior-ess-mode-hook
 	  '(lambda()
