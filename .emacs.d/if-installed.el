@@ -34,6 +34,10 @@
 (load "move-rename-yegge")
 (load "frame-window-buffer-functions")
 
+;;;_ . revert all buffers
+
+(load "revert-all-buffers")
+
 ;;;_* ===== Frame-resizing-functions
 
 (load "frame-resizing-functions")
