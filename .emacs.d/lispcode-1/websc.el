@@ -1,5 +1,9 @@
 (require 'cl)
 (defun* pdf-extractor (urlname dirname &optional (loadpage t))
+  "Creates a function, extract-pdf-links
+Usage: (pdf-extractor 
+        \"http://www/contents/\"
+        \"Directory\""
   (require 'w3m)
   ;; set parms
   (setq w3m-async-exec t

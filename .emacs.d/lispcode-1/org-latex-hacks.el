@@ -2,19 +2,31 @@
 
 (defun org-begin-or-end ()
   (interactive)
-  (flet ((fn (s) (save-excursion 
-		   (or (search-backward s () t) 0)))
-	 (upcase-add (s) (save-excursion 
-			   (beginning-of-line)
-			   (insert s)
-			   (if (< (point) (line-end-position))
-			       (upcase-word 1))
-			   )))
+  (flet ((fn (str &optional suffix) 
+	     (save-excursion 
+	       ;; env is dynamically-scoped
+	       (let (pos) ;; (match-beginning 0) will find last match if nil
+		 (setq pos (re-search-backward 
+			    (concat 
+			     (replace-regexp-in-string "\\#\\+" "\\\\#\\\\+" str) 
+			     suffix) () t))
+		 (if suffix 
+		     (setq env (match-string-no-properties 1)))
+		 (or pos 0))))
+	 (upcase-add (str &optional env) 
+		     (save-excursion 
+		       (beginning-of-line)
+		       (insert (concat str env))
+		       (if (< (point) (line-end-position))
+			   (upcase-word 1)))))
     (let ((st "#+BEGIN_")
-	  (en "#+END_"))
-      (if (<= (fn st) (fn en))
+	  (en "#+END_")
+	  env)
+      (if (<= (fn st "\\([A-Z]+\\)") (fn en))
 	  (upcase-add st)
-	(upcase-add en)))))
+	(progn
+	  (upcase-add en env)
+	  (end-of-line))))))
 
 ;;;_* customization
 (add-hook 'org-mode-hook
