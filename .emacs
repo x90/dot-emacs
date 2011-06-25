@@ -10,6 +10,11 @@
 (require 'cl)
 (require 'find-lisp)
 
+;;;_* ===== path-join function =====
+
+(defun path-join (dirname filename)
+  (concat (file-name-as-directory dirname) filename))
+
 ;;;_* ===== Variables =====
 
 (defvar emacs-root)
@@ -38,12 +43,13 @@
 ;;  "My home directory — the root of my personal emacs load-path.")
 
 ;; ends in slash?
-(if (not (equal (substring emacs-root -1) "/"))
-    (setq emacs-root (concat (emacs-root "/"))))
+(setq emacs-root (file-name-as-directory emacs-root))
+(setq local-packages (file-name-as-directory local-packages))
 
 (labels ((add-path (p)
 	 (add-to-list 'load-path (concat emacs-root p))))
-  (let ((folders '("" "lispcode-1" "lispcode-2" "contributed")))
+  (let ((folders '("" "lispcode-1" "lispcode-2" 
+		   "contributed" "local-packages")))
 	(mapc 'add-path folders)))
 
 ;; add all the elisp subdirectories to my load path

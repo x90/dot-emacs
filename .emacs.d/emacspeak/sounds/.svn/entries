@@ -1,71 +1,0 @@
-8
-
-dir
-6170
-http://emacspeak.googlecode.com/svn/trunk/sounds
-http://emacspeak.googlecode.com/svn
-
-
-
-2008-08-26T22:04:37.125791Z
-5864
-tv.raman.tv
-has-props
-
-svn:special svn:externals svn:needs-lock
-
-
-
-
-
-
-
-
-
-
-
-bb5eec90-091a-0410-bc89-db79c2cf2c7b
-
-.nosearch
-file
-
-
-
-
-2009-06-25T06:16:24.000000Z
-d41d8cd98f00b204e9800998ecf8427e
-2006-08-29T21:24:37.596938Z
-4149
-tv.raman.tv
-
-chimes-11k-stereo
-dir
-
-chords-stereo
-dir
-
-default-8k
-dir
-
-cartoon-22k-mono
-dir
-
-chimes-stereo
-dir
-
-emacspeak.mp3
-file
-
-
-
-
-2009-06-25T06:16:24.000000Z
-cadb47430f7574d9bfddf3f09f2fd4f6
-2006-08-11T19:11:17.593950Z
-4047
-tv.raman.tv
-has-props
-
-chimes-mono
-dir
-

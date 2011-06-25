@@ -59,8 +59,7 @@
 (add-to-list 'load-path 
 	     "/Applications/MATLAB_R2010a.app/java/extern/EmacsLink/lisp" t)
 (add-to-list 'load-path 
-	     (concat emacs-root "matlab-emacs") t)
-
+	     (concat local-packages "matlab-emacs") t)
 
 ;;;_ . everything else
 

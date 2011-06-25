@@ -86,7 +86,7 @@
     (py-execute-region (mark) (point) async)))
 
 ;;;_* ===== R/ESS =====
-(add-to-list 'load-path (concat emacs-root "ess/lisp"))
+(add-to-list 'load-path (concat local-packages "ess/lisp"))
 ;; (global-set-key (kbd "C-c R") 'my-start-R-ESS);'my-ess-start-R)
 
 ;;;_ . recommended
@@ -143,8 +143,8 @@
 	     (visual-line-mode 1)))
 
 ;;;_* ===== Elscreen ====
-(add-to-list 'load-path (concat emacs-root "apel"))
-(add-to-list 'load-path (concat emacs-root "elscreen"))
+(add-to-list 'load-path (concat local-packages "apel"))
+(add-to-list 'load-path (concat local-packages "elscreen"))
 (setq dir nil line nil column nil)
 (load "elscreen" "ElScreen" t)
 ;; F9 creates a new elscreen, shift-F9 kills it <f8>
@@ -179,7 +179,7 @@
 ;;;_* ===== Emacs Color Theme =====
 
 ;; commented out for aquamacs
-(add-to-list 'load-path (concat emacs-root "color-theme"))
+(add-to-list 'load-path (concat local-packages "color-theme"))
 (require 'color-theme)
 (setq color-theme-load-all-themes nil)
 (color-theme-initialize)
@@ -188,8 +188,8 @@
 
 (require 'undo-tree)
 ;;;_* ===== CEDET + ECB =====
-;;(add-to-list 'load-path (concat emacs-root "cedet"))
-;;(add-to-list 'load-path (concat emacs-root "ecb"))
+;;(add-to-list 'load-path (concat local-packages "cedet"))
+;;(add-to-list 'load-path (concat local-packages "ecb"))
 
 ;;; ========================================================
 ;;; CEDET
@@ -210,7 +210,7 @@
 
 
 ;;;_* ===== AUCTeX =====
-(add-to-list 'load-path (concat emacs-root "auctex"))
+(add-to-list 'load-path (concat local-packages "auctex"))
 
 ;;;_ . AUCTeX
 
@@ -267,15 +267,15 @@
 
 ;; (setq warning-suppress-types nil)
 ;; uncomment for aquamacs
-(add-to-list 'load-path (concat emacs-root "emacs-w3m"))
-(add-to-list 'load-path (concat emacs-root "emacspeak/lisp/g-client"))
+(add-to-list 'load-path (concat local-packages "emacs-w3m"))
+(add-to-list 'load-path (concat local-packages "emacspeak/lisp/g-client"))
 (load "gblogger.el")
 
 ;; st
 (load "websc.el")
 
 ;;;_* ===== nXML mode and html functions =====
-(add-to-list 'load-path (concat emacs-root "nxml-mode"))
+(add-to-list 'load-path (concat local-packages "nxml-mode"))
 ;; (load "~/.emacs.d/nxml-mode-20041004/rng-auto.el")
 ;; (global-set-key (kbd "C-c C-w") 'w3m-goto-url-new-session)
 ; for xml files, use nxml-mode instead of sgml-mode
@@ -287,8 +287,8 @@
 
 ;;;_* ===== Viper-vimpulse =====
 
-(when (file-exists-p (concat emacs-root "vimpulse/vimpulse.el"))
-  (add-to-list 'load-path (concat emacs-root "vimpulse"))
+(when (file-exists-p (concat local-packages "vimpulse/vimpulse.el"))
+  (add-to-list 'load-path (concat local-packages "vimpulse"))
   ;; (add-hook 'viper-mode-hook (lambda () (require 'vimpulse)))
   (defun vimpulse-on ()
     (interactive)
@@ -296,8 +296,8 @@
 
 ;;;_* ===== Google Weather =====
 
-(when (file-exists-p (concat emacs-root "google-weather-el/google-weather.el"))
-  (add-to-list 'load-path (concat emacs-root "google-weather-el"))
+(when (file-exists-p (concat local-packages "google-weather-el/google-weather.el"))
+  (add-to-list 'load-path (concat local-packages "google-weather-el"))
   (require 'google-weather))
 
 ;;;_* ===== Multi-term=====
@@ -322,7 +322,7 @@
 
 ;;;_* ===== nav-mode =====
 
-(add-to-list 'load-path (concat emacs-root "nav-mode"))
+(add-to-list 'load-path (concat local-packages "nav-mode"))
 (require 'nav)
 ;;;_* ===== code-folding =====
 
