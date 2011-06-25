@@ -1,5 +1,7 @@
 1) Download this repository to local machine (to update, use ./pull)
-2) Create or edit ~/.emacs.d/local-settings.el, which accepts values for the following custom variables: account-username, machine-name, emacs-root, local-packages, color-theme-local. For instance,
+2) Create or edit ~/.emacs.d/local-settings.el, which accepts values
+   for the following custom variables: account-username, machine-name,
+   emacs-root, local-packages, color-theme-local. For instance,
 #+BEGIN_EXAMPLE
 ;; Primary variables
     (setq account-username "stakahama")
@@ -15,8 +17,11 @@
 #+END_EXAMPLE
 
 Additional notes:
-- ~/.emacs will load ~/.emacs.d/local-settings.el at the top of .emacs (after definition of these custom variables)
-- Packages called in 'if-installed.el' and additional machine-specific files ('turtle.el', 'elguapo.el', 'clamshell.el') should be in the path specified by the local-packages variable.
+- ~/.emacs will load ~/.emacs.d/local-settings.el at the top of .emacs
+  (after definition of these custom variables)
+- Packages called in 'if-installed.el' and additional machine-specific
+  files ('turtle.el', 'elguapo.el', 'clamshell.el') should be in the
+  path specified by the local-packages variable.
 - Byte compile for first time ("0" prefix suppresses prompting for each file):
     C-u 0 M-x byte-recompile-directory
 - Only byte compile necessary files:
