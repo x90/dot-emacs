@@ -1,5 +1,5 @@
 *.elc
-auto-saves-list/.saves-*~ 
+*~ 
 .git
 .DS_Store
 local-settings.el

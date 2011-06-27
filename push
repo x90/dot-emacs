@@ -14,5 +14,5 @@ else
     echo message: $1
     git commit -a -m $1
 fi
-git push -u origin master
-# # git push git@github.com:stakahama/dot-emacs.git master
+# git push -u origin master
+# git push git@github.com:stakahama/dot-emacs.git master
