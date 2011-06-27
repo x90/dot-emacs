@@ -74,3 +74,40 @@
 		  (wrap-backwards "[ ]"))
 	    ;; search only backwards
 	    (wrap-backwards "[ _^\\\\]")))))))
+
+
+(defun LaTeX-match-pattern (re-pattern match-num outputbuffer &optional skipsort-p)
+  (lexical-let ((re-pattern re-pattern)
+		(match-num match-num)
+		(outputbuffer outputbuffer)
+		(skipsort-p skipsort-p))
+    (lambda (&optional arg)
+      (interactive "P")
+      (let (matches)
+	(save-excursion 
+	  (goto-char (point-min))
+	  (while (re-search-forward re-pattern () t)
+	    (setq matches (append matches (list (match-string-no-properties match-num))))))
+	(setq matches (delete-dups matches))
+	(when (not skipsort-p)
+	  (setq matches (sort matches 'string-lessp)))
+	(get-buffer-create outputbuffer)
+	(save-excursion
+	  (set-buffer outputbuffer)
+	  (when (not (equal (point) (point-min)))
+	    (goto-char (point-max))
+	    (insert "\n"))
+	  (insert "--- new list ---\n")
+	  (insert (mapconcat 'identity matches "\n"))
+	  (insert "\n"))
+	(if arg
+	    (switch-to-buffer outputbuffer))))))
+    
+(fset 'latex-find-citations
+      (LaTeX-match-pattern "\\\\\\(citet\\|citep\\|citealp\\){\\([^}]+\\)}" 
+			  2 "*citations*"))
+
+(fset 'latex-find-figrefs
+      (LaTeX-match-pattern "\\\\ref{\\(fig[:][^}]+\\)}" 
+			   1 "*figlist*" t))
+
