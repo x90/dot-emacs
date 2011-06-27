@@ -8,9 +8,11 @@ rsync -avuP ~/.emacs .
 git add .
 if [ -z $1 ]
 then
-    git commit --all -m $0
+    echo message: $0
+    git commit -a -m $0
 else
-    git commit --all -m $1
+    echo message: $1
+    git commit -a -m $1
 fi
 git push -u origin master
 # # git push git@github.com:stakahama/dot-emacs.git master

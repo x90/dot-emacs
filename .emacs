@@ -43,13 +43,13 @@
 ;;  "My home directory — the root of my personal emacs load-path.")
 
 ;; ends in slash?
-(setq emacs-root (file-name-as-directory emacs-root))
-(setq local-packages (file-name-as-directory local-packages))
+(setq emacs-root (file-name-as-directory (expand-file-name emacs-root)))
+(setq local-packages (file-name-as-directory (expand-file-name local-packages)))
 
+(add-to-list 'load-path local-packages)
 (labels ((add-path (p)
 	 (add-to-list 'load-path (concat emacs-root p))))
-  (let ((folders '("" "lispcode-1" "lispcode-2" 
-		   "contributed" "local-packages")))
+  (let ((folders '("" "lispcode-1" "lispcode-2" "contributed")))
 	(mapc 'add-path folders)))
 
 ;; add all the elisp subdirectories to my load path
