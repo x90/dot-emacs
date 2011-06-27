@@ -3,9 +3,14 @@
 ## example usage:
 ## bash push "commit message"
 
-rsync -arvP --exclude='*.elc' --exclude='.saves-*~' --exclude='.git' --exclude='.DS_Store' --exclude='local-settings.el' --delete-excluded  ~/.emacs.d/ .emacs.d/
-rsync -avP ~/.emacs .
+rsync -arvuP --delete --exclude-from=excluded ~/.emacs.d/ .emacs.d/
+rsync -avuP ~/.emacs .
 git add .
-git commit --all -m $1
-# # git push git@github.com:stakahama/dot-emacs.git master
+if [ -z $1 ]
+then
+    git commit --all -m $0
+else
+    git commit --all -m $1
+fi
 git push -u origin master
+# # git push git@github.com:stakahama/dot-emacs.git master
