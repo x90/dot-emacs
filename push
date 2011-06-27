@@ -8,4 +8,4 @@ rsync -avP ~/.emacs .
 git add .
 git commit --all -m $1
 # # git push git@github.com:stakahama/dot-emacs.git master
-# git push -u origin master
+git push -u origin master
