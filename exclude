@@ -1,5 +1,4 @@
 *.elc
-*~ 
 .git
 .DS_Store
 local-settings.el
