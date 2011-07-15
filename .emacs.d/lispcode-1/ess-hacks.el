@@ -32,62 +32,67 @@
   implemented to mimic behavior of emacs inferior shell."
   (interactive "P")
   ;; local functions
-  (flet ((find-R-buffers () 
-	  ;; return top R buffer name or nil
-	  (let ((buflist (reverse (buffer-list)))
-		(x nil))
-	    (dolist (x buflist)
-	      (let ((bufname (buffer-name x)))
-		(if (string-match "\\*R" bufname)
-		    (return bufname))))))
-	 (find-matching-R-buffer (this-buffer) 
-	  ;; return matching R buffer name
-	  (let ((buflist (reverse (buffer-list)))
-		(patt (format "\\*R\\([:][0-9]+\\)?\\*<%s>" 
-			      (file-name-sans-extension this-buffer)))
-		(bufname nil)
-		(x nil))
-	    (dolist (x buflist)
-	      (setq bufname (buffer-name x))
-	      (if (string-match patt bufname)
-		  (return bufname)))))
-	 (is-wide-p ()
-	  (let ((thres 160))
-	    (> (frame-width) thres))))
+  (flet ((find-matching-R-buffer (this-buffer) 
+				 ;; return matching R buffer name
+				 (let ((buflist (reverse (buffer-list)))
+				       (get-buffer-var nil)
+				       (this-r-process nil)
+				       (bufname nil)
+				       (tmp nil)
+				       (x nil))
+				   (fset 'get-buffer-var
+					 (lambda (buf var)
+					   (save-excursion
+					     (set-buffer buf)
+					     (eval var))))
+				   (if (setq this-r-process (get-buffer-var
+							     this-buffer 
+							     'ess-local-process-name))
+				       (dolist (x buflist bufname)
+					 (setq tmp (buffer-name x))
+					 (if (and (equal this-r-process 
+							 (get-buffer-var x 'ess-local-process-name))
+						  (equal 'inferior-ess-mode 
+							 (get-buffer-var x 'major-mode)))
+					     (setq bufname tmp)))
+				     nil)))
+	 (is-wide-p (thres)
+		    (> (frame-width) thres)))
     ;; local variables:
-	 (let ((this-buffer (buffer-name))
-	       (r-proc nil)
-	       (r-buffer nil))
-	   ;; function body:
-	   (setq r-buffer (find-matching-R-buffer this-buffer))
-	   ;; (setq r-buffer (find-R-buffers))
-	   (if (is-wide-p) 
-	       (delete-other-windows)
-	     (condition-case nil
-		 (delete-other-windows-vertically)
-	       (error (delete-other-windows))))
-	   (if (or (not r-buffer) arg)
-	       (progn
-		 (R)
-		 (setq r-proc (buffer-name))
-		 (setq r-buffer 
-		       (concat r-proc 
-			       (format "<%s>" 
-				       (file-name-sans-extension 
-					this-buffer))))
-		 (rename-buffer r-buffer))
-	     (switch-to-buffer r-buffer))
-	   (if (is-wide-p) 
-	       (split-window-horizontally)
-	     (split-window-vertically))
-	   (switch-to-buffer this-buffer)
-	  (enlarge-window 10)
-	  (setq ess-current-process-name 
-		(if r-proc
-		    (replace-regexp-in-string "\\*" "" r-proc)
-		  (replace-regexp-in-string "\\*\\(R[:0-9]*\\)\\*(<.+>)?"
-					    "\\1" 
-					    r-buffer))))))
+    (let ((this-buffer (buffer-name))
+	  (r-proc nil)
+	  (r-buffer nil)
+	  (maxwidth 160))
+      ;; function body:
+      (setq r-buffer (find-matching-R-buffer this-buffer))
+      (if (is-wide-p maxwidth) 
+	  (delete-other-windows)
+	(condition-case nil
+	    (delete-other-windows-vertically)
+	  (error (delete-other-windows))))
+      (if (or (not r-buffer) arg)
+	  (progn
+	    (R)
+	    (setq r-proc (buffer-name))
+	    (setq r-buffer 
+		  (concat r-proc 
+			  (format "<%s>" 
+				  (file-name-sans-extension 
+				   this-buffer))))
+	    (rename-buffer r-buffer))
+	(switch-to-buffer r-buffer))
+      (if (is-wide-p maxwidth)
+	  (split-window-horizontally)
+	(split-window-vertically))
+      (switch-to-buffer this-buffer)
+      (enlarge-window 10)
+      (setq ess-current-process-name 
+	    (if r-proc
+		(replace-regexp-in-string "\\*" "" r-proc)
+	      (replace-regexp-in-string "\\*\\(R[:0-9]*\\)\\*(<.+>)?"
+					"\\1" 
+					r-buffer))))))
+
 
 (defun ess-set-proc-name (R-name)
  (interactive "sEnter R process name: ")
