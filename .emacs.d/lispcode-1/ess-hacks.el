@@ -64,13 +64,16 @@
 	  (r-buffer nil)
 	  (maxwidth 160))
       ;; function body:
-      (setq r-buffer (find-matching-R-buffer this-buffer))
+      (setq r-buffer (find-matching-R-buffer this-buffer))      
+      ;; delete other windows
       (if (is-wide-p maxwidth) 
 	  (delete-other-windows)
 	(condition-case nil
 	    (delete-other-windows-vertically)
 	  (error (delete-other-windows))))
+      ;; /
       (if (or (not r-buffer) arg)
+	  ;; start new R process
 	  (progn
 	    (R)
 	    (setq r-proc (buffer-name))
@@ -80,12 +83,15 @@
 				  (file-name-sans-extension 
 				   this-buffer))))
 	    (rename-buffer r-buffer))
+	;; otherwise switch to current R process
 	(switch-to-buffer r-buffer))
+      ;; split window between script and inferior shell
       (if (is-wide-p maxwidth)
 	  (split-window-horizontally)
 	(split-window-vertically))
       (switch-to-buffer this-buffer)
       (enlarge-window 10)
+      ;; /
       (setq ess-current-process-name 
 	    (if r-proc
 		(replace-regexp-in-string "\\*" "" r-proc)
@@ -96,7 +102,6 @@
 
 (defun ess-set-proc-name (R-name)
  (interactive "sEnter R process name: ")
- (setq ess-current-process-name R-name)
  (setq ess-local-process-name R-name))
 
 (defun ess-setwd ()
