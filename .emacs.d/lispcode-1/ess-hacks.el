@@ -92,7 +92,7 @@
       (switch-to-buffer this-buffer)
       (enlarge-window 10)
       ;; /
-      (setq ess-current-process-name 
+      (setq ess-local-process-name 
 	    (if r-proc
 		(replace-regexp-in-string "\\*" "" r-proc)
 	      (replace-regexp-in-string "\\*\\(R[:0-9]*\\)\\*(<.+>)?"
