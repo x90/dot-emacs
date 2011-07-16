@@ -32,39 +32,48 @@
   implemented to mimic behavior of emacs inferior shell."
   (interactive "P")
   ;; local functions
-  (flet ((find-matching-R-buffer (this-buffer) 
-				 ;; return matching R buffer name
-				 (let ((buflist (reverse (buffer-list)))
-				       (get-buffer-var nil)
-				       (this-r-process nil)
-				       (bufname nil)
-				       (tmp nil)
-				       (x nil))
+  (flet ((find-matching-inferior-r (this-buffer) 
+				 ;; return matching inferior R buffer name
+				 (let (buflist get-buffer-var pattern bufname x)
+				   (setq buflist (reverse (buffer-list)))
 				   (fset 'get-buffer-var
 					 (lambda (buf var)
 					   (save-excursion
 					     (set-buffer buf)
 					     (eval var))))
-				   (if (setq this-r-process (get-buffer-var
-							     this-buffer 
-							     'ess-local-process-name))
+				   (if (setq pattern 
+					     (get-buffer-var this-buffer 
+					      'ess-local-process-name))
+				       ;; ess local process exists
+				       ;; match based on process
 				       (dolist (x buflist bufname)
-					 (setq tmp (buffer-name x))
-					 (if (and (equal this-r-process 
+					 (if (and (equal pattern
 							 (get-buffer-var x 'ess-local-process-name))
 						  (equal 'inferior-ess-mode 
 							 (get-buffer-var x 'major-mode)))
-					     (setq bufname tmp)))
-				     nil)))
+					     (setq bufname (buffer-name x))))
+				     ;; else: match based on name
+				     ;; e.g., file is reopened and ess local process is nil
+				     (progn
+				       (setq pattern
+					     (format "\\*R[:0-9]*\\*<%s>" 
+						     (file-name-sans-extension this-buffer)))
+				       (let (tmp)
+					 (dolist (x buflist bufname)
+					   (setq tmp (buffer-name x))
+					   (if (and (string-match pattern tmp)
+						    (equal 'inferior-ess-mode 
+							   (get-buffer-var x 'major-mode)))
+					       (setq bufname tmp))))))))
 	 (is-wide-p (thres)
 		    (> (frame-width) thres)))
     ;; local variables:
     (let ((this-buffer (buffer-name))
 	  (r-proc nil)
-	  (r-buffer nil)
+	  (r-inferior-buffer nil)
 	  (maxwidth 160))
       ;; function body:
-      (setq r-buffer (find-matching-R-buffer this-buffer))      
+      (setq r-inferior-buffer (find-matching-inferior-r this-buffer))      
       ;; delete other windows
       (if (is-wide-p maxwidth) 
 	  (delete-other-windows)
@@ -72,19 +81,20 @@
 	    (delete-other-windows-vertically)
 	  (error (delete-other-windows))))
       ;; /
-      (if (or (not r-buffer) arg)
+      (if (or (not r-inferior-buffer) arg)
 	  ;; start new R process
 	  (progn
 	    (R)
-	    (setq r-proc (buffer-name))
-	    (setq r-buffer 
-		  (concat r-proc 
-			  (format "<%s>" 
-				  (file-name-sans-extension 
-				   this-buffer))))
-	    (rename-buffer r-buffer))
-	;; otherwise switch to current R process
-	(switch-to-buffer r-buffer))
+	    (setq r-proc ess-local-process-name)
+	    (setq r-inferior-buffer
+		  ((format "*%s*<%s>"  r-proc
+			   (file-name-sans-extension 
+			    this-buffer))))
+	    (rename-buffer r-inferior-buffer))
+	;; else: switch to current R process
+	(progn
+	  (switch-to-buffer r-inferior-buffer)
+	  (setq r-proc ess-local-process-name)))
       ;; split window between script and inferior shell
       (if (is-wide-p maxwidth)
 	  (split-window-horizontally)
@@ -92,12 +102,8 @@
       (switch-to-buffer this-buffer)
       (enlarge-window 10)
       ;; /
-      (setq ess-local-process-name 
-	    (if r-proc
-		(replace-regexp-in-string "\\*" "" r-proc)
-	      (replace-regexp-in-string "\\*\\(R[:0-9]*\\)\\*(<.+>)?"
-					"\\1" 
-					r-buffer))))))
+      (if r-proc
+	  (setq ess-local-process-name r-proc)))))
 
 
 (defun ess-set-proc-name (R-name)
