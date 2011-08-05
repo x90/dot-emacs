@@ -32,18 +32,17 @@
   implemented to mimic behavior of emacs inferior shell."
   (interactive "P")
   ;; local functions
-  (flet ((find-matching-inferior-r (this-buffer) 
+  (flet ((get-buffer-var (buf var)
+			 (save-excursion
+			   (set-buffer buf)
+			   (eval var)))
+	 (find-matching-inferior-r (this-buffer) 
 				 ;; return matching inferior R buffer name
-				 (let (buflist get-buffer-var pattern bufname x)
+				 (let (buflist pattern bufname x)
 				   (setq buflist (reverse (buffer-list)))
-				   (fset 'get-buffer-var
-					 (lambda (buf var)
-					   (save-excursion
-					     (set-buffer buf)
-					     (eval var))))
 				   (if (setq pattern 
 					     (get-buffer-var this-buffer 
-					      'ess-local-process-name))
+							     'ess-local-process-name))
 				       ;; ess local process exists
 				       ;; match based on process
 				       (dolist (x buflist bufname)
@@ -87,9 +86,9 @@
 	    (R)
 	    (setq r-proc ess-local-process-name)
 	    (setq r-inferior-buffer
-		  ((format "*%s*<%s>"  r-proc
-			   (file-name-sans-extension 
-			    this-buffer))))
+		  (format "*%s*<%s>"  r-proc
+			  (file-name-sans-extension 
+			   this-buffer)))
 	    (rename-buffer r-inferior-buffer))
 	;; else: switch to current R process
 	(progn
