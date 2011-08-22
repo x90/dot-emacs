@@ -104,6 +104,7 @@
 (autoload 'ess-rdired "ess-rdired" "View R objects in a dired-like buffer." t)
 ;; (setq-default ess-default-style 'C++)
 (setq inferior-ess-r-help-command "utils::help(\"%s\", help_type=\"html\")\n") 
+(setq ess-eval-visibly-p nil) ;; from http://www.damtp.cam.ac.uk/user/sje30/ess11
 
 (if (eq system-type 'darwin)
     (setq inferior-R-args "--arch x86_64"))
@@ -409,3 +410,6 @@
 	     (define-key org-mode-map "\M-q" 'fill-paragraph)
 	     (local-set-key [(shift f6)] 'org-export-as-html)))
 
+;;;_* ===== tbe-mode (Thunderbird) =====
+
+(require 'tbemail)

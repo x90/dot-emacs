@@ -9,6 +9,7 @@
 ;;;_* ===== Libraries =====
 (require 'cl)
 (require 'find-lisp)
+(defalias 'find 'find-lisp-find-dired)
 
 ;;;_* ===== path-join function =====
 

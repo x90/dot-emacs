@@ -60,3 +60,12 @@
 		       (number-sequence from to) "\n")))
 
 
+(defun clean-non-ascii ()
+  "Replaces all non-ascii characters or sequence of characters with space
+http://www.gnu.org/s/emacs/manual/html_node/elisp/Regexp-Special.html
+Can be re-written to handle regions and save excursion, etc."
+  (interactive)
+  (goto-char (point-min))
+  (while (not (eobp))
+    (re-search-forward "[^[:ascii:]]")
+    (replace-match " ")))
