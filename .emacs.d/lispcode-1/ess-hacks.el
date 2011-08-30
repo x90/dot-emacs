@@ -147,7 +147,7 @@
 
 (defun ess-seek-help () 
   (interactive)
-  (ess-send-to-function "help"))
+  (ess-send-to-function ".help.ESS"))
 (defun ess-seek-args () 
   (interactive)
   (ess-send-to-function "args"))

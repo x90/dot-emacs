@@ -103,7 +103,7 @@
 (setq comint-move-point-for-output t)
 (autoload 'ess-rdired "ess-rdired" "View R objects in a dired-like buffer." t)
 ;; (setq-default ess-default-style 'C++)
-(setq inferior-ess-r-help-command "utils::help(\"%s\", help_type=\"html\")\n") 
+;; (setq inferior-ess-r-help-command "utils::help(\"%s\", help_type=\"html\")\n") 
 (setq ess-eval-visibly-p nil) ;; from http://www.damtp.cam.ac.uk/user/sje30/ess11
 
 (if (eq system-type 'darwin)
@@ -149,12 +149,17 @@
 (setq dir nil line nil column nil)
 (load "elscreen" "ElScreen" t)
 ;; F9 creates a new elscreen, shift-F9 kills it <f8>
+
+;;;_ --- key bindings ---
+(global-set-key (kbd "<f6>"  ) 'elscreen-reset)
+(global-set-key (kbd "<f7>") 'elscreen-next)
+(global-set-key (kbd "S-<f7>") 'elscreen-previous)
 (global-set-key (kbd "<f8>"    ) 'elscreen-create)
 (global-set-key (kbd "S-<f8>"  ) 'elscreen-kill)
-;;(global-set-key (kbd "<f12>"  ) 'elscreen-reset)
 (define-key elscreen-map "f" 'elscreen-find-file)
 (define-key elscreen-map "r" 'elscreen-reset)
 
+;;;_ ... functions ---
 (defun elscreen-reset ()
   "Cycles through screens so that window configurations are reset 
 (prevents flashing from redraw-frame[?] after each keystroke)"
@@ -286,7 +291,9 @@
 (setq htmlize-convert-nonascii-to-entities nil)
 (setq htmlize-html-charset "utf-8")
 
-;;;_* ===== Viper-vimpulse =====
+
+;;;_* ===== Vim emulation =====
+;;;_ . --- Viper-vimpulse ---
 
 (when (file-exists-p (concat local-packages "vimpulse/vimpulse.el"))
   (add-to-list 'load-path (concat local-packages "vimpulse"))
@@ -294,6 +301,28 @@
   (defun vimpulse-on ()
     (interactive)
     (require 'vimpulse)))
+    (vimpulse-imap "\C-o" 'viper-escape-to-vi)))
+
+;;;_ . --- Evil-mode ---
+
+(when (file-exists-p (concat local-packages "evil"))
+  ;; Evil requires undo-tree.el in the load-path for linear undo and undo branches.
+  ;; undo-tree.el is in ~/.emacs.d/contributed/
+  (add-to-list 'load-path (concat local-packages "evil"))
+  (require 'evil))
+
+(defun evil-follow-emacs-visual-line ()
+  (interactive)
+  (define-key evil-motion-state-map "j" #'evil-next-visual-line)
+  (define-key evil-motion-state-map "k" #'evil-previous-visual-line)
+  (define-key evil-motion-state-map "$" #'evil-end-of-visual-line)
+  (define-key evil-motion-state-map "^" #'evil-first-non-blank-of-visual-line)
+  (define-key evil-motion-state-map "0" #'evil-beginning-of-visual-line))
+
+(add-hook 'evil-mode 
+	  (lambda ()
+	    (when visual-line-mode
+	      (evil-follow-emacs-visual-line))))
 
 ;;;_* ===== Google Weather =====
 
@@ -413,3 +442,4 @@
 ;;;_* ===== tbe-mode (Thunderbird) =====
 
 (require 'tbemail)
+(add-hook 'tbemail 'visual-line-mode)
