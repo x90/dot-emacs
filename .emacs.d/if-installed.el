@@ -301,7 +301,7 @@
   (defun vimpulse-on ()
     (interactive)
     (require 'vimpulse)))
-    (vimpulse-imap "\C-o" 'viper-escape-to-vi)))
+    ;; (vimpulse-imap "\C-o" 'viper-escape-to-vi)))
 
 ;;;_ . --- Evil-mode ---
 
@@ -442,4 +442,4 @@
 ;;;_* ===== tbe-mode (Thunderbird) =====
 
 (require 'tbemail)
-(add-hook 'tbemail 'visual-line-mode)
+(add-hook 'tbemail-mode-hook 'visual-line-mode)

@@ -116,8 +116,16 @@
 (setq mouse-sel-retain-highlight t) ; Keep mouse highlighting
 
 ;;;_* ===== Global key bindings =====
-(setq ns-command-key t)
+;; (setq ns-command-key t)
 ;; (global-unset-key "%")
+(defun ns-command-as-meta ()
+  (interactive)
+  (setq ns-command-modifier 'meta))
+(defun ns-command-as-control ()
+  (interactive)
+  (setq ns-command-modifier 'control))
+(ns-command-as-meta)
+
 
 
 ;;;_ . --- rebindings ---
