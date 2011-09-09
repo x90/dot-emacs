@@ -193,6 +193,8 @@
 ;;;_* ===== Undo-tree-mode =====
 
 (require 'undo-tree)
+(global-undo-tree-mode -1)
+
 ;;;_* ===== CEDET + ECB =====
 ;;(add-to-list 'load-path (concat local-packages "cedet"))
 ;;(add-to-list 'load-path (concat local-packages "ecb"))
@@ -305,12 +307,25 @@
 
 ;;;_ . --- Evil-mode ---
 
+;;;_  : keybindings/toggle
+(global-set-key (kbd "S-<f6>") 'evil-mode-toggle)
+(defun evil-mode-toggle ()
+  (interactive)
+  (if evil-mode
+      (progn
+	(evil-mode -1)
+	(global-undo-tree-mode -1)
+	(show-paren-mode 1))
+    (evil-mode 1)))
+
+;;;_  : load
 (when (file-exists-p (concat local-packages "evil"))
   ;; Evil requires undo-tree.el in the load-path for linear undo and undo branches.
   ;; undo-tree.el is in ~/.emacs.d/contributed/
   (add-to-list 'load-path (concat local-packages "evil"))
   (require 'evil))
 
+;;;_  : visual-line-mode
 (defun evil-follow-emacs-visual-line ()
   (interactive)
   (define-key evil-motion-state-map "j" #'evil-next-visual-line)
