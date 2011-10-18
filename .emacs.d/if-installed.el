@@ -57,7 +57,8 @@
 (add-hook 'python-mode-hook 
 	  '(lambda () 
 	     (local-set-key (kbd "C-c C-j") 'py-execute-line)
-	     (local-set-key (kbd "C-c C-p") 'py-execute-paragraph)))
+	     (local-set-key (kbd "C-c C-p") 'py-execute-paragraph)
+	     (local-set-key (kbd "<C-return>") 'py-execute-region)))
 
 ;;;_ . functions
 (defun py-mark-line ()
@@ -104,7 +105,9 @@
 (autoload 'ess-rdired "ess-rdired" "View R objects in a dired-like buffer." t)
 ;; (setq-default ess-default-style 'C++)
 ;; (setq inferior-ess-r-help-command "utils::help(\"%s\", help_type=\"html\")\n") 
-(setq ess-eval-visibly-p nil) ;; from http://www.damtp.cam.ac.uk/user/sje30/ess11
+
+;; suppress printing of sent commands
+;; (setq ess-eval-visibly-p nil) ;; from http://www.damtp.cam.ac.uk/user/sje30/ess11
 
 (if (eq system-type 'darwin)
     (setq inferior-R-args "--arch x86_64"))
@@ -158,6 +161,8 @@
 (global-set-key (kbd "S-<f8>"  ) 'elscreen-kill)
 (define-key elscreen-map "f" 'elscreen-find-file)
 (define-key elscreen-map "r" 'elscreen-reset)
+(global-set-key (kbd "S-C-<left>") 'elscreen-previous)
+(global-set-key (kbd "S-C-<right>") 'elscreen-right)
 
 ;;;_ ... functions ---
 (defun elscreen-reset ()

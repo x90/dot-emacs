@@ -124,6 +124,28 @@
 	 (replace-regexp-in-string "<.+>" "" "*R*<read2_2011-05>"))
       (message "Not iESS buffer"))))
 
+(defun ess-which-script-buffers ()
+  "Finds scripts associated with a particular inferior ESS buffer R process. Run this function from an inferior ESS buffer and associated script buffers (major-mode is ess-mode) will be listed in minibuffer region. Requires common lisp extensions: (require 'cl)"
+  (interactive)
+  (flet ((get-buffer-var (buf var)
+			 (save-excursion
+			   (set-buffer buf)
+			   (eval var)))
+	 (get-mode (x) (get-buffer-var x 'major-mode))
+	 (get-rproc (x) (get-buffer-var x 'ess-local-process-name))
+	 (matchfn (rproc)
+		  (lexical-let ((rproc rproc))
+		    (lambda (x) 
+		      (and (equal 'ess-mode (get-mode x))
+			   (equal rproc (get-rproc x)))))))
+    (if (equal 'inferior-ess-mode (get-mode (buffer-name)))
+      (let (ismatchp)
+	(fset 'ismatchp (matchfn (get-rproc (buffer-name))))
+	(princ (mapconcat 'buffer-name
+			  (remove-if-not 'ismatchp (reverse (buffer-list)))
+			  "\n")))
+      (princ "not inferior ESS buffer"))))
+
 ;;;_* send to ess-line (help)
 
 (defun ess-send-to-function (ess-fn)

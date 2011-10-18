@@ -313,7 +313,12 @@ one window."
 	   (>= emacs-version-number 24))
   (require 'ns-platform-support)
   (ns-extended-platform-support-mode 1)
-  (fset 'toggle-fullscreen 'ns-toggle-fullscreen))
+  (fset 'toggle-fullscreen 'ns-toggle-fullscreen)
+  ;; (defadvice toggle-fullscreen 
+  ;;   (after toggle-fullscreen-augment-modeline activate)
+  ;;   (display-battery-mode)
+  ;;   (display-time-mode)))
+  )
 
 ;;;_* ===== Disabled commands =====
 
@@ -374,3 +379,4 @@ one window."
 ;;           (user-real-uid)) "/server"))
 ;;     nil 
 ;;   (server-start))
+(put 'narrow-to-page 'disabled nil)
