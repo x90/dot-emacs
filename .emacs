@@ -350,12 +350,12 @@ one window."
  '(indicate-empty-lines t)
  '(nav-resize-frame-p t)
  '(ns-command-modifier (quote control))
- ;; '(org-agenda-files nil)
- ;; '(org-export-latex-date-format "")
- ;; '(org-export-latex-image-default-option "width=20em")
+ '(org-agenda-files nil)
+ '(org-export-latex-date-format "")
+ '(org-export-latex-image-default-option "width=20em")
  '(pop-up-windows nil)
  '(py-shell-switch-buffers-on-execute nil)
- '(same-window-buffer-names (quote ("*shell*" "*shell*<2>" "*shell*<2>" "*shell*<3>" "*shell*<4>" "*shell*<5>""*mail*" "*inferior-lisp*" "*ielm*" "*scheme*" "*Help*" "*Async Shell Command*" "*grep*" "*rgrep*" "*Directory*")))
+ '(same-window-buffer-names (quote ("*shell*" "*shell*<2>" "*shell*<2>" "*shell*<3>" "*shell*<4>" "*shell*<5>" "*mail*" "*inferior-lisp*" "*ielm*" "*scheme*" "*Help*" "*Async Shell Command*" "*grep*" "*rgrep*" "*Directory*")))
  '(warning-suppress-types (quote ((server)))))
 
 (custom-set-faces

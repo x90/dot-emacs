@@ -56,6 +56,7 @@
 ;;;_ . hook
 (add-hook 'python-mode-hook 
 	  '(lambda () 
+	     (local-set-key (kbd "C-c z") 'py-oschdir)
 	     (local-set-key (kbd "C-c C-j") 'py-execute-line)
 	     (local-set-key (kbd "C-c C-p") 'py-execute-paragraph)
 	     (local-set-key (kbd "<C-return>") 'py-execute-region)))
@@ -85,6 +86,87 @@
   (save-excursion
     (py-mark-paragraph)
     (py-execute-region (mark) (point) async)))
+(defun py-oschdir ()
+  (interactive)
+  (let ((txt (format "import os; os.chdir(\"%s\")" 
+		     (file-name-directory (buffer-file-name)))))
+    (save-window-excursion
+      (with-temp-buffer
+	(insert txt)
+	(py-execute-buffer)))))
+
+;;;_* ===== iPython =====
+
+(setq ipython-command "/Library/Frameworks/Python.framework/Versions/2.7/bin/ipython")
+(require 'ipython)
+;; (setq py-python-command-args '("--pylab"))
+
+;;;_ . clear screen
+
+(defun comint-clear-screen ()
+  (interactive)
+  (let ((comint-buffer-maximum-size 0))
+    (comint-truncate-buffer)))
+
+;;;_ . additions
+;; from 
+;; http://mail.scipy.org/pipermail/ipython-user/2008-September/005791.html
+
+;; (require 'comint)
+;; (define-key comint-mode-map [(meta p)]
+;;    'comint-previous-matching-input-from-input)
+;; (define-key comint-mode-map [(meta n)]
+;;    'comint-next-matching-input-from-input)
+;; (define-key comint-mode-map [(control meta n)]
+;;     'comint-next-input)
+;; (define-key comint-mode-map [(control meta p)]
+;;     'comint-previous-input)
+
+;; (setq comint-completion-autolist t	;list possibilities on partial
+;; 					;completion
+;;        comint-completion-recexact nil	;use shortest compl. if
+;; 					;characters cannot be added
+;;        ;; how many history items are stored in comint-buffers (e.g. py- 
+;; shell)
+;;        ;; use the HISTSIZE environment variable that shells use (if  
+;; avail.)
+;;        ;; (default is 32)
+;;        comint-input-ring-size (string-to-number (or (getenv  
+;; "HISTSIZE") "100")))
+
+;; (add-to-list 'interpreter-mode-alist '("python" . python-mode))
+
+
+;; from 
+;; http://mail.python.org/pipermail/python-mode/2011-January/000888.html
+
+;; (setq ipython-completion-command-string
+;;       "print(';'.join(__IP.Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n")
+
+;;;_* ===== Pylookup =====
+
+;; ;;;_ . load package
+;; ;; add pylookup to your loadpath, ex) "~/.lisp/addons/pylookup"
+;; (setq pylookup-dir "~/lisp/local-packages/pylookup")
+;; (add-to-list 'load-path pylookup-dir)
+;; ;; load pylookup when compile time
+;; (eval-when-compile (require 'pylookup))
+
+;; ;; set executable file and db file
+;; (setq pylookup-program (concat pylookup-dir "/pylookup.py"))
+;; (setq pylookup-db-file (concat pylookup-dir "/pylookup.db"))
+
+;; ;; to speedup, just load it on demand
+;; (autoload 'pylookup-lookup "pylookup"
+;;   "Lookup SEARCH-TERM in the Python HTML indexes." t)
+;; (autoload 'pylookup-update "pylookup" 
+;;   "Run pylookup-update and create the database at `pylookup-db-file'." t)
+
+;; ;;;_ . customizations
+
+;; (require 'w3m)
+;; (setq browse-url-browser-function 'w3m-browse-url)
+;; (global-set-key "\C-ch" 'pylookup-lookup)
 
 ;;;_* ===== R/ESS =====
 (add-to-list 'load-path (concat local-packages "ess/lisp"))
@@ -106,11 +188,33 @@
 ;; (setq-default ess-default-style 'C++)
 ;; (setq inferior-ess-r-help-command "utils::help(\"%s\", help_type=\"html\")\n") 
 
-;; suppress printing of sent commands
-;; (setq ess-eval-visibly-p nil) ;; from http://www.damtp.cam.ac.uk/user/sje30/ess11
-
 (if (eq system-type 'darwin)
     (setq inferior-R-args "--arch x86_64"))
+
+;;;_ . suppress printing of sent commands for speedup
+
+(setq ess-eval-visibly-p nil) ;; from http://www.damtp.cam.ac.uk/user/sje30/ess11
+
+(if (not ess-eval-visibly-p)
+    (defun inferior-ess-output-filter (proc string)
+      "print newline after each evaluation when ess-eval-visibly-p is true
+works only with R
+from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32684429.html"
+      (let ((pbuf (process-buffer proc))
+	    (pmark (process-mark proc))
+	    (prompt-regexp "^>\\( [>+]\\)*\\( \\)$")
+	    (prompt-replace-regexp "^>\\( [>+]\\)*\\( \\)[^>+\n]"))
+	(setq string (replace-regexp-in-string prompt-replace-regexp " \n"
+					       string nil nil 2))
+	(with-current-buffer pbuf
+	  (goto-char pmark)
+	  (beginning-of-line)
+	  (when (looking-at prompt-regexp)
+	    (goto-char pmark)
+	    (insert "\n")
+	    (set-marker pmark (point)))
+	  ))
+      (comint-output-filter proc (inferior-ess-strip-ctrl-g string))))
 
 ;;;_ . functions
 
@@ -119,7 +223,7 @@
 ;;;_ . hooks
 (add-hook 'ess-mode-hook
 	  '(lambda()
-	     ;;(local-set-key [(shift return)] 'my-ess-eval)
+	     (local-set-key (kbd "<C-return>") 'ess-eval-region)
 	     (local-set-key (kbd "C-c d") 'ess-rdired)
 	     (local-set-key (kbd "C-c 9") 'add-column-offset)))
 
@@ -161,6 +265,7 @@
 (global-set-key (kbd "S-<f8>"  ) 'elscreen-kill)
 (define-key elscreen-map "f" 'elscreen-find-file)
 (define-key elscreen-map "r" 'elscreen-reset)
+(define-key elscreen-map "l" 'elscreen-create)
 (global-set-key (kbd "S-C-<left>") 'elscreen-previous)
 (global-set-key (kbd "S-C-<right>") 'elscreen-right)
 
@@ -197,8 +302,8 @@
 
 ;;;_* ===== Undo-tree-mode =====
 
-(require 'undo-tree)
-(global-undo-tree-mode -1)
+;;;_ . load
+;; (require 'undo-tree)
 
 ;;;_* ===== CEDET + ECB =====
 ;;(add-to-list 'load-path (concat local-packages "cedet"))
@@ -328,7 +433,9 @@
   ;; Evil requires undo-tree.el in the load-path for linear undo and undo branches.
   ;; undo-tree.el is in ~/.emacs.d/contributed/
   (add-to-list 'load-path (concat local-packages "evil"))
-  (require 'evil))
+  (require 'undo-tree)
+  (require 'evil)
+  (global-undo-tree-mode -1))
 
 ;;;_  : visual-line-mode
 (defun evil-follow-emacs-visual-line ()
@@ -356,19 +463,87 @@
 ;;http://emacs-fu.blogspot.com/2009/07/keeping-related-buffers-together-with.html
 ;;comments section
 
+;;;_ . load
+
 (require 'multi-term)
 (setq multi-term-program "/bin/bash")
+;; (setq term-term-name "xterm-color")
+(defalias 'mterm 'multi-term)
+(defalias 'mtn 'multi-term-next)
+
+;;;_ . custom set 1
 
 (defun term-mode-change-directory ())
 (fset 'term-mode-change-directory (shell-mode-change-directory 'term-mode))
-(let ((termkeys '(("M-DEL" . term-send-backward-kill-word)
-		  ("C-<backspace>" . term-send-backward-kill-word)
-		  ("M-d" . term-send-forward-kill-word)
-		  ("C-c C-j" . term-line-mode)
-		  ("C-c C-k" . term-char-mode)
-		  ("C-c c" . term-mode-change-directory))))
+
+;;http://code.google.com/p/dea/source/browse/trunk/my-lisps/multi-term-settings.el
+(defun term-my-send-kill-line ()
+  "Kill line in term mode."
+  (interactive)
+  (call-interactively 'kill-line)
+  (term-send-raw-string "\C-k"))
+
+(defun term-my-send-yank ()
+  "Yank in term mode."
+  (interactive)
+  (yank)
+  (term-send-raw-string (current-kill 0)))
+
+(defun term-my-send-backward-kill-word ()
+  (interactive)
+  (term-send-raw-string "\e\C-H"))
+
+(defun term-my-send-undo ()
+  (interactive)
+  (term-send-raw-string "\C-_"))
+
+(let ((termkeys '(("M-DEL"		.	term-my-send-backward-kill-word)
+		  ("C-<backspace>"	.	term-my-send-backward-kill-word)
+		  ("M-d"		.	term-send-forward-kill-word)
+		  ("C-c C-j"		.	term-line-mode)
+		  ("C-c C-k"		.	term-char-mode)
+		  ("C-c C-c"		.	term-stop-subjob)
+		  ("C-x u"              .       term-my-send-undo)
+		  ;; ("C-z"             . term-stop-subjob)
+		  ("C-k" 		.       term-my-send-kill-line) ;; was (term-send-raw) by default
+		  ("C-y" 		.       term-my-send-yank)
+		  ("C-c c"		.	term-mode-change-directory))))
   (dolist (elem termkeys nil)
     (add-to-list 'term-bind-key-alist elem)))
+
+;;;_ . custom set 2
+
+;;http://www.reddit.com/r/emacs/comments/mdxdn/help_me_make_multiterm_more_like_shell_or_eshell/
+
+;; (eval-after-load "multi-term"
+;;   (progn
+;;     (defun term-send-quote ()
+;;       (interactive)
+;;       (term-send-raw-string "\C-v"))
+
+;;     (defun term-send-M-x ()
+;;       (interactive)
+;;       (term-send-raw-string "\ex"))
+
+;;     (defun term-send-backward-kill-word ()
+;;       (interactive)
+;;       (term-send-raw-string "\C-H"))
+
+;;     (dolist
+;; 	(bind '(("C-<right>"     . term-send-forward-word)
+;; 		("C-<left>"      . term-send-backward-word)
+;; 		("C-<backspace>" . term-send-backward-kill-word)
+;; 		("C-<delete>"    . term-send-forward-kill-word)
+;; 		("C-k"           . term-send-raw)
+;; 		("C-y"           . term-send-raw)
+;; 		("C-c C-z"       . term-stop-subjob)
+;; 		("C-z"           . term-stop-subjob)))
+;;       (add-to-list 'term-bind-key-alist bind))))
+
+;;;_ . customize
+;; (custom-set-variables
+;;  '(term-default-bg-color "#000000")        ;; background color (black)
+;;  '(term-default-fg-color "#dddd00"))       ;; foreground color (yellow)
 
 ;;;_* ===== nav-mode =====
 
