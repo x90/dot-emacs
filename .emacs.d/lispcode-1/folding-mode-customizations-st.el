@@ -88,3 +88,4 @@
 (add-hook 'LilyPond-mode-hook 'turn-on-folding-mode)
 (add-hook 'matlab-mode-hook 'turn-on-folding-mode)
 (add-hook 'emacs-lisp-mode-hook 'turn-on-folding-mode)
+(add-hook 'tex-mode-hook 'turn-on-folding-mode)

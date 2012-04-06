@@ -367,6 +367,9 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 		     'LaTeX-wrap-environment-around-thing-or-region)
       (local-set-key (kbd "C-c j") 
 		     'LaTeX-insert-item-no-newline)))
+      ;; (local-set-key (kbd "M-[ t") 'hide-body)
+      ;; (local-set-key (kbd "M-[ a") 'show-all)))
+
 ;; (setq PDFLaTeX-mode-hook '(lambda ()
 ;;       (local-set-key (kbd "C-c e") 
 ;; 		     (LaTeX-enclose-expression "$"))
@@ -580,6 +583,8 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 
 ;;;_* ===== Org-mode ! =====
 
+(add-to-list 'load-path (concat local-packages "org/lisp"))
+(add-to-list 'load-path (concat local-packages "org/contrib/lisp"))
 (require 'org-install)
 (require 'org-latex)
 ;; The following lines are always needed.  Choose your own keys.

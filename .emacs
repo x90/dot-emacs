@@ -350,7 +350,7 @@ one window."
  '(indicate-empty-lines t)
  '(nav-resize-frame-p t)
  '(ns-command-modifier (quote control))
- '(org-agenda-files nil)
+ ;; '(org-agenda-files (quote ("~/notes.org")))
  '(org-export-latex-date-format "")
  '(org-export-latex-image-default-option "width=20em")
  '(pop-up-windows nil)

@@ -27,3 +27,18 @@ Additional notes:
 - Only byte compile necessary files:
     M-x byte-recompile-directory
 - To commit edits, use ./push "message".
+
+On a Mac, I also create these aliases in .bash_profile after installing the Cocoa/Nextstep Emacs:
+## --- emacs ---
+alias emacs='/Applications/Emacs.app/Contents/MacOS/Emacs'
+alias enw='/Applications/Emacs.app/Contents/MacOS/Emacs -nw'
+## --- emacsclient ---
+## http://philipweaver.blogspot.com/2009/08/emacs-23.html
+## start a windowed frame
+alias ec="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -n -c -a /Applications/Emacs.app/Contents/MacOS/Emacs"
+## start a terminal frame
+alias em="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -t -a /Applications/Emacs.app/Contents/MacOS/Emacs -nw"
+## do not start a new frame
+alias ea="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -n -a /Applications/Emacs.app/Contents/MacOS/Emacs"
+## --- kill emacs ---
+alias killemacs='/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -e "(kill-emacs)"'
