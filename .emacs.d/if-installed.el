@@ -330,6 +330,7 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 
 ;;;_* ===== AUCTeX =====
 (add-to-list 'load-path (concat local-packages "auctex"))
+(add-to-list 'load-path (concat local-packages "auctex/preview"))
 
 ;;;_ . AUCTeX
 
@@ -391,7 +392,7 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 ;; uncomment for aquamacs
 (add-to-list 'load-path (concat local-packages "emacs-w3m"))
 (add-to-list 'load-path (concat local-packages "emacspeak/lisp/g-client"))
-(load "gblogger.el")
+;; (load "gblogger.el") ;; no longer exists?
 
 ;; st
 (load "websc.el")

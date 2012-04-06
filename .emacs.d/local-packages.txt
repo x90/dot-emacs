@@ -1,14 +1,16 @@
-apel
-auctex
-auctex.el
+apel (http://cvs.m17n.org/elisp/APEL/)
+auctex (http://www.gnu.org/software/auctex/)
+color-theme (http://download.savannah.gnu.org/releases/color-theme/)
+elscreen (http://www.morishima.net/~naoto/elscreen-en/?lang=en)
+ess (git clone https://github.com/emacs-ess/ESS.git <local-path>)
+python-mode.el
+ipython.el
+
 cedet
-color-theme
 ebib
 ecb
-elscreen
 emacs-w3m
 emacspeak
-ess
 google-weather-el
 haskell-mode
 matlab-emacs

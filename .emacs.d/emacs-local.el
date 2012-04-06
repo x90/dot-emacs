@@ -14,6 +14,8 @@
     (progn
       (load "turtle")
       (load "if-installed")))
+(if (equal machine-name "aprlmac1")
+    (load "if-installed"))
 
 ;;;_* Color 
 (if (equal color-theme-local 'color-theme-tangotango)
