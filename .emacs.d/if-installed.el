@@ -43,6 +43,7 @@
 (load "frame-resizing-functions")
 
 ;;;_* ===== Python-mode =====
+(load "python-mode")
 (setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
 (setq interpreter-mode-alist (cons '("python" . python-mode)
 				   interpreter-mode-alist))
@@ -410,12 +411,12 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 ;;;_* ===== Vim emulation =====
 ;;;_ . --- Viper-vimpulse ---
 
-(when (file-exists-p (concat local-packages "vimpulse/vimpulse.el"))
-  (add-to-list 'load-path (concat local-packages "vimpulse"))
-  ;; (add-hook 'viper-mode-hook (lambda () (require 'vimpulse)))
-  (defun vimpulse-on ()
-    (interactive)
-    (require 'vimpulse)))
+;; (when (file-exists-p (concat local-packages "vimpulse/vimpulse.el"))
+;;   (add-to-list 'load-path (concat local-packages "vimpulse"))
+;;   ;; (add-hook 'viper-mode-hook (lambda () (require 'vimpulse)))
+;;   (defun vimpulse-on ()
+;;     (interactive)
+;;     (require 'vimpulse)))
     ;; (vimpulse-imap "\C-o" 'viper-escape-to-vi)))
 
 ;;;_ . --- Evil-mode ---
