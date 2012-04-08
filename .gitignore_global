@@ -1,0 +1,14 @@
+## http://help.github.com/ignore-files/
+## git config --global core.excludesfile .gitignore_global
+
+# OS generated files #
+######################
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+
+# Emacs generated files #
+######################
+*~
+\#*#
