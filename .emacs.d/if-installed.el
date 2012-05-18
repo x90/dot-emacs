@@ -396,6 +396,22 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 
 ;; st
 (load "websc.el")
+;; http://web.mit.edu/nelhage/Public/dot-elisp/w3m/w3m-e23.el
+;; http://stuff.mit.edu/afs/sipb/contrib/emacs/packages/emacs-w3m-1.4.4/w3m-load.el
+
+;; (defun charset-id (arg) 
+;;   nil)
+;; (require 'w3m-e21)
+;; (provide 'w3m-e23)
+
+;; (if (= emacs-major-version 23)
+;;     (progn
+;;       (require 'w3m-load)
+;;       (require 'w3m-ems))
+;;   (require 'w3m))
+
+(require 'w3m-load)
+(require 'w3m-ems)
 
 ;;;_* ===== nXML mode and html functions =====
 (add-to-list 'load-path (concat local-packages "nxml-mode"))
@@ -440,7 +456,8 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
   (add-to-list 'load-path (concat local-packages "evil"))
   (require 'undo-tree)
   (require 'evil)
-  (global-undo-tree-mode -1))
+  (global-undo-tree-mode -1)
+  (evil-mode -1))
 
 ;;;_  : visual-line-mode
 (defun evil-follow-emacs-visual-line ()
@@ -645,3 +662,10 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 
 (require 'tbemail)
 (add-hook 'tbemail-mode-hook 'visual-line-mode)
+;;;_* ===== ispell =====
+
+;; (when (file-exists-p "/Applications/Emacs.app/Contents/Resources/lisp/textmodes")
+;;   (add-to-list 'load-path
+;; 	       "/Applications/Emacs.app/Contents/Resources/lisp/textmodes")
+;;   (load "ispell"))
+;; (setq ispell-program-name "/opt/local/bin/ispell")

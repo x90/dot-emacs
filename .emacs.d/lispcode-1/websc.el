@@ -6,8 +6,11 @@ Usage: (pdf-extractor
         \"Directory\""
   (require 'w3m)
   ;; set parms
-  (setq w3m-async-exec t
-	w3m-command-arguments '("-o" "HTTP_PROXY=http://webproxy.ucsd.edu:3128"))
+  ;; --- no longer UCSD ---
+  ;; (setq w3m-async-exec t
+  ;; 	w3m-command-arguments '("-o" "HTTP_PROXY=http://webproxy.ucsd.edu:3128"))
+  (setq w3m-async-exec nil)
+  ;; ---
   ;; open page
   (when loadpage 
     (w3m-browse-url urlname))

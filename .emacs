@@ -332,10 +332,10 @@ one window."
 ;;(defcustom warning-suppress-types nil)
 (setq warning-suppress-types nil)
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  '(cua-delete-selection nil)
  '(cua-enable-cua-keys nil)
  '(ecb-options-version "2.40")
@@ -350,7 +350,7 @@ one window."
  '(indicate-empty-lines t)
  '(nav-resize-frame-p t)
  '(ns-command-modifier (quote control))
- ;; '(org-agenda-files (quote ("~/notes.org")))
+ '(org-agenda-files nil)
  '(org-export-latex-date-format "")
  '(org-export-latex-image-default-option "width=20em")
  '(pop-up-windows nil)
@@ -359,10 +359,10 @@ one window."
  '(warning-suppress-types (quote ((server)))))
 
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
  )
 
 ;;;_* ===== Load extras =====
