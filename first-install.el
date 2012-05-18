@@ -1,5 +1,9 @@
 #!/usr/bin/emacs --script
 
+;; auctex needs compilation (requires)
+;; install wget with homebrew/macports/fink
+;; install bzr with homebrew/macports/fink
+
 ;;;_* set directory
 (setq pkg-path "~/lisp/local-packages/")
 (if (not (file-exists-p pkg-path))
@@ -16,8 +20,7 @@
 	       (if (not sep)
 		   (setq sep " "))
 	       (mapconcat 'identity mylist sep)))
-    (let (;(command "wget -c")
-	  (get-command "curl -C - -O")
+    (let ((get-command "curl -C - -O") ;(command "wget -c")
 	  (uncompress "tar -xzvf"))
       (join (list (join (list get-command (concat host filename)))
 		  (join (list uncompress filename))
@@ -30,6 +33,8 @@
 (let ((pkg-list 
        '(("apel" "cvs -z9 -d :pserver:anonymous@cvs.m17n.org:/cvs/root checkout apel")
 	 ("ess" "git clone https://github.com/emacs-ess/ESS.git ess")
+	 ("python-mode" "bzr branch lp:python-mode")
+	 ("ipython" "mkdir ipython && cd ipython && curl -O -C - https://raw.github.com/ipython/ipython/master/docs/emacs/ipython.el")
 	 ("evil" "git clone git://gitorious.org/evil/evil.git")
 	 ("emacs-w3m" "cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot co emacs-w3m")
 	 ("matlab-emacs" "cvs -z3 -d:pserver:anonymous@matlab-emacs.cvs.sourceforge.net:/cvsroot/matlab-emacs co -P matlab-emacs")
@@ -54,4 +59,3 @@
 
 ;; http://sourceforge.net/projects/cedet/
 ;; http://sourceforge.net/projects/ecb/
-
