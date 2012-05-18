@@ -1,12 +1,21 @@
 #!/usr/bin/emacs --script
 
-;; auctex needs compilation (requires)
-;; install wget with homebrew/macports/fink
-;; install bzr with homebrew/macports/fink
+;; OS X:
+;;   install wget, bzr with homebrew/macports/fink
+;; Ubuntu:
+;;   install curl, bzr, git, ftp, cvs with apt/synaptic
+;; auctex needs compilation (requires latex)
+
+;; invoke with 
+;; $ emacs --script first-install.el
 
 ;;;_* set directory
 (setq pkg-path "~/lisp/local-packages/")
-(if (not (file-exists-p pkg-path))
+(when (not (file-exists-p pkg-path))
+  (let ((basepath 
+	 (file-name-directory (replace-regexp-in-string "/$" "" pkg-path))))
+    (when (not (file-exists-p basepath))
+      (mkdir basepath)))
     (mkdir pkg-path))
 (cd pkg-path)
 

@@ -14,7 +14,8 @@
     (progn
       (load "turtle")
       (load "if-installed")))
-(if (equal machine-name "aprlmac1")
+(if (or (equal machine-name "aprlmac1")
+	(equal machine-name "aprlpc1"))
     (load "if-installed"))
 
 ;;;_* Color 
