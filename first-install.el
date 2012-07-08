@@ -42,6 +42,7 @@
 (let ((pkg-list 
        '(("apel" "cvs -z9 -d :pserver:anonymous@cvs.m17n.org:/cvs/root checkout apel")
 	 ("ess" "git clone https://github.com/emacs-ess/ESS.git ess")
+	 ("org-mode" "git clone git://orgmode.org/org-mode.git")
 	 ("python-mode" "bzr branch lp:python-mode")
 	 ("ipython" "mkdir ipython && cd ipython && curl -O -C - https://raw.github.com/ipython/ipython/master/docs/emacs/ipython.el")
 	 ("evil" "git clone git://gitorious.org/evil/evil.git")

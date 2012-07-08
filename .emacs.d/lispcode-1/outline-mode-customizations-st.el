@@ -83,3 +83,4 @@
 (add-hook 'python-mode-hook (generic-outline-hook "###_"))
 (add-hook 'tex-mode-hook (generic-outline-hook "%%%_"))
 (add-hook 'matlab-mode-hook (generic-outline-hook "%%%_"))
+(add-hook 'sh-mode-hook (generic-outline-hook "###_"))

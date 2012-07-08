@@ -69,3 +69,19 @@ Can be re-written to handle regions and save excursion, etc."
   (while (not (eobp))
     (re-search-forward "[^[:ascii:]]")
     (replace-match " ")))
+
+(defun downcap (&optional arg)
+  (interactive "P")
+  (when (region-active-p)
+    (save-excursion
+      (let (pos1 pos2 patt p)
+	(setq patt (mapcar (lambda (x) (format "[ :]+%s[ :]+" x))
+			   '("A" "The" "Of" "With" "In" "And" "Or" "But")))
+	(setq pos1 (region-beginning) pos2 (region-end))
+	(downcase-region pos1 pos2)
+	(capitalize-region pos1 pos2)
+	(when (not arg) ;; downcase articles and prepositions
+	  (dolist (p patt)
+	    (goto-char pos1)
+	    (while (re-search-forward p pos2 t)
+	      (replace-match (downcase (match-string-no-properties 0))))))))))

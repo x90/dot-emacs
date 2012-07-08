@@ -53,63 +53,6 @@
 
 ; (set-buffer-file-coding-system 'unix) ; or 'mac or 'dos
 
-;;;_* ===== Matlab =====
-
-;;;_ . load-path
-(add-to-list 'load-path 
-	     "/Applications/MATLAB_R2010a.app/java/extern/EmacsLink/lisp" t)
-(add-to-list 'load-path 
-	     (concat local-packages "matlab-emacs") t)
-
-;;;_ . everything else
-
-;; http://www.andrew.cmu.edu/course/16-720/extras/matlab_in_emacs/
-(require 'matlab-load)
-(autoload 'matlab-mode "matlab" "Enter MATLAB mode." t)
-(setq auto-mode-alist (cons '("\\.m\\'" . matlab-mode) auto-mode-alist))
-(autoload 'matlab-shell "matlab" "Interactive MATLAB mode." t)
-
-(setq matlab-verify-on-save-flag nil) ; turn off auto-verify on save
-(defun my-matlab-mode-hook ()
-  (setq fill-column 76))		; where auto-fill should wrap
-;; (add-hook 'matlab-mode-hook 'my-matlab-mode-hook)
-;; (defun my-matlab-shell-mode-hook ()
-;;   '())
-;; (add-hook 'matlab-shell-mode-hook 'my-matlab-shell-mode-hook)
-
-;;(setq matlab-shell-command "/Applications/MATLAB_R2008a/bin/matlab")
-(setq matlab-shell-command (if (eq system-type 'darwin)
-			       "/Applications/MATLAB_R2010a.app/bin/matlab"
-			     (if (eq system-type 'gnu/linux)
-				 "/usr/local/bin/matlab")))
-(setq matlab-shell-command-switches '("-nojvm" "-nosplash"))
-
-;; defadvice is awesome
-(defadvice matlab-shell-run-region
-  (before matlab-shell-run-region-last-point activate)
-  "Deactivate mark before executing region 
-   (region is preserved after mark is deactivated)"
-  (deactivate-mark)
-)
-
-;; (matlab-cedet-setup)
-;; http://www.mathworks.de/matlabcentral/newsreader/view_thread/160303
-(autoload 'matlab-eei-connect "matlab-eei"
-  "Connects Emacs to MATLAB's external editor interface.")
-
-(setq matlab-verify-on-save-flag nil)	; turn off auto-verify on save
-;; using the function keys to control matlab debugging.
-(defun my-matlab-mode-hook ()
-  (define-key matlab-mode-map [f5] 'matlab-eei-run-continue)
-  (define-key matlab-mode-map [f9] 'matlab-shell-run-region)
-  (define-key matlab-mode-map [f10] 'matlab-eei-step)
-  (define-key matlab-mode-map [f11] 'matlab-eei-step-in)
-  (define-key matlab-mode-map [f12] 'matlab-eei-breakpoint-set-clear)
-  (define-key matlab-mode-map [f1] ' matlab-eei-exit-debug)
-  (setq fill-column 76)
-  (imenu-add-to-menubar "Find"))	; where auto-fill should wrap
-(add-hook 'matlab-mode-hook 'my-matlab-mode-hook)
-
 ;;;_* ===== Thunderbird =====
 (require 'tbemail)
 

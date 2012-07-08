@@ -98,8 +98,10 @@
 
 ;;;_* ===== iPython =====
 
-(setq ipython-command "/Library/Frameworks/Python.framework/Versions/2.7/bin/ipython")
+;; (setq ipython-command "/Library/Frameworks/Python.framework/Versions/2.7/bin/ipython")
+;; (setq ipython-command "/usr/local/bin/ipython")
 (require 'ipython)
+;; (setq ipython-command "ipython")
 ;; (setq py-python-command-args '("--pylab"))
 
 ;;;_ . clear screen
@@ -292,6 +294,105 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 ;; (let ()
 ;;   (ad-disable-advice 'set-frame-size 'after 'elscreen-set-frame-size)
 ;;   (ad-activate 'set-frame-size))
+
+;;;_* ===== Matlab =====
+
+;;;_ . load-path
+;; (add-to-list 'load-path 
+;; 	     "/Applications/MATLAB_R2010a.app/java/extern/EmacsLink/lisp" t)
+(add-to-list 'load-path 
+	     (concat local-packages "matlab-emacs") t)
+
+;;;_ . my functions
+
+(defun matlab-shell-execute-line ()
+  (interactive)
+  (save-excursion
+    (end-of-line)
+    (push-mark (point))
+    (beginning-of-line)
+    (exchange-point-and-mark)
+    (matlab-shell-run-region (mark) (point))))
+
+(defun matlab-shell-open ()
+  (interactive)
+  (flet ((is-wide-p (thres)
+		    (> (frame-width) thres)))
+    (let ((this-buffer (buffer-name))
+	  (maxwidth 160))
+      ;; function body:
+      ;; delete other windows
+      (if (is-wide-p maxwidth)
+	  (delete-other-windows)
+	(condition-case nil
+	    (delete-other-windows-vertically)
+	  (error (delete-other-windows))))
+      ;; shell
+      (matlab-shell)
+      ;; split window between script and inferior shell
+      (if (is-wide-p maxwidth)
+	  (split-window-horizontally)
+	(split-window-vertically))
+      (switch-to-buffer this-buffer)
+      (enlarge-window 10))))
+
+(add-hook 'matlab-mode-hook 
+	  (lambda ()
+	    (local-set-key (kbd "C-c R") 'matlab-shell-open)
+	    (local-set-key (kbd "C-c C-j") 'matlab-shell-execute-line)
+	    (local-set-key (kbd "<C-return>") 'matlab-shell-run-region)))
+
+;;;_ . everything else
+
+;; http://www.andrew.cmu.edu/course/16-720/extras/matlab_in_emacs/
+(require 'matlab-load)
+(autoload 'matlab-mode "matlab" "Enter MATLAB mode." t)
+(setq auto-mode-alist (cons '("\\.m\\'" . matlab-mode) auto-mode-alist))
+(autoload 'matlab-shell "matlab" "Interactive MATLAB mode." t)
+
+(setq matlab-verify-on-save-flag nil) ; turn off auto-verify on save
+(defun my-matlab-mode-hook ()
+  (setq fill-column 76))		; where auto-fill should wrap
+;; (add-hook 'matlab-mode-hook 'my-matlab-mode-hook)
+;; (defun my-matlab-shell-mode-hook ()
+;;   '())
+;; (add-hook 'matlab-shell-mode-hook 'my-matlab-shell-mode-hook)
+
+;;(setq matlab-shell-command "/Applications/MATLAB_R2008a/bin/matlab")
+(setq matlab-shell-command (if (eq system-type 'darwin)
+			       (format "/Applications/%s/bin/matlab"
+				       (car (remove-if-not 
+					     (lambda (x) (string-match "MATLAB" x)) 
+					     (directory-files "/Applications"))))
+			     (if (eq system-type 'gnu/linux)
+				 "/usr/local/bin/matlab")))
+(setq matlab-shell-command-switches '("-nojvm" "-nosplash"))
+
+;; defadvice is awesome
+(defadvice matlab-shell-run-region
+  (before matlab-shell-run-region-last-point activate)
+  "Deactivate mark before executing region 
+   (region is preserved after mark is deactivated)"
+  (deactivate-mark)
+)
+
+;; (matlab-cedet-setup)
+;; http://www.mathworks.de/matlabcentral/newsreader/view_thread/160303
+(autoload 'matlab-eei-connect "matlab-eei"
+  "Connects Emacs to MATLAB's external editor interface.")
+
+(setq matlab-verify-on-save-flag nil)	; turn off auto-verify on save
+;; using the function keys to control matlab debugging.
+(defun my-matlab-mode-hook ()
+  (define-key matlab-mode-map [f5] 'matlab-eei-run-continue)
+  (define-key matlab-mode-map [f9] 'matlab-shell-run-region)
+  (define-key matlab-mode-map [f10] 'matlab-eei-step)
+  (define-key matlab-mode-map [f11] 'matlab-eei-step-in)
+  (define-key matlab-mode-map [f12] 'matlab-eei-breakpoint-set-clear)
+  (define-key matlab-mode-map [f1] ' matlab-eei-exit-debug)
+  (setq fill-column 76)
+  (imenu-add-to-menubar "Find"))	; where auto-fill should wrap
+(add-hook 'matlab-mode-hook 'my-matlab-mode-hook)
 
 ;;;_* ===== Emacs Color Theme =====
 
@@ -602,8 +703,8 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 
 ;;;_* ===== Org-mode ! =====
 
-(add-to-list 'load-path (concat local-packages "org/lisp"))
-(add-to-list 'load-path (concat local-packages "org/contrib/lisp"))
+(add-to-list 'load-path (concat local-packages "org-mode/lisp"))
+(add-to-list 'load-path (concat local-packages "org-mode/contrib/lisp"))
 (require 'org-install)
 (require 'org-latex)
 ;; The following lines are always needed.  Choose your own keys.
