@@ -34,7 +34,8 @@
       (join (list (join (list get-command (concat host filename)))
 		  (join (list uncompress filename))
 		  (join (list "rm" filename))
-		  (join (list "mv" (replace-regexp-in-string "\\.tar\\.gz" "" filename) packagename))) " && "))))
+		  (join (list "mv" (replace-regexp-in-string "\\.tar\\.gz" "" filename) 
+			      packagename))) " && "))))
 
 ;;;_* download files
 
@@ -55,6 +56,7 @@
     (byte-recompile-directory (concat pkg-path (car pkg)) 0 t)))
 
 ;;;_ . tar files
+;;     (may need to update specific versions)
 (let ((pkg-list 
        '(("color-theme" "http://ftp.igh.cnrs.fr/pub/nongnu/color-theme/" "color-theme-6.6.0.tar.gz")
 	 ;; ("emacs-w3m" "http://emacs-w3m.namazu.org/" "emacs-w3m-1.4.4.tar.gz")
@@ -63,6 +65,10 @@
 	 ;; the following may have newer versions
 	 ("auctex" "http://ftp.gnu.org/pub/gnu/auctex/" "auctex-11.86.tar.gz")
 	 ("nav-mode" "http://emacs-nav.googlecode.com/files/" "emacs-nav-20110220.tar.gz"))))
+	 ("magit" "http://github.com/downloads/magit/magit/" "magit-1.1.1.tar.gz")
+          ;; go to https://github.com/magit/magit/
+          ;;       http://github.com/magit/magit/downloads
+          ;;       http://github.com/magit/magit/tarball/master
   (dolist (pkg pkg-list)
     (callprc (apply 'retrieve-untar-command pkg))
     (byte-recompile-directory (concat pkg-path (car pkg)) 0 t)))
