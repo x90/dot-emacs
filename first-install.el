@@ -8,6 +8,11 @@
 
 ;; invoke with 
 ;; $ emacs --script first-install.el
+;; $ emacs --script first-install.el arg -> where arg=1,t etc. to overwrite
+
+;;;_* parse argument
+(when argv
+  (setq package-overwrite t))
 
 ;;;_* set directory
 (setq pkg-path "~/lisp/local-packages/")
@@ -53,8 +58,9 @@
 	 ("haskell-mode" "git clone https://github.com/haskell/haskell-mode.git haskell-mode")
 	 ("emacspeak" "cvs -z3 -d:pserver:anonymous@emacspeak.cvs.sourceforge.net:/cvsroot/emacspeak co -P emacspeak"))))
   (dolist (pkg pkg-list)
-    (callprc (cadr pkg))
-    (byte-recompile-directory (concat pkg-path (car pkg)) 0 t)))
+    (when (or (not (file-exists-p path) package-overwrite))
+      (callprc (cadr pkg))
+      (byte-recompile-directory (concat pkg-path (car pkg)) 0 t))))
 
 ;;;_ . tar files
 ;;     (may need to update specific versions)
@@ -72,8 +78,9 @@
           ;;       http://github.com/magit/magit/downloads
           ;;       http://github.com/magit/magit/tarball/master
   (dolist (pkg pkg-list)
-    (callprc (apply 'retrieve-untar-command pkg))
-    (byte-recompile-directory (concat pkg-path (car pkg)) 0 t)))
+    (when (or (not (file-exists-p path) package-overwrite))
+      (callprc (apply 'retrieve-untar-command pkg))
+      (byte-recompile-directory (concat pkg-path (car pkg)) 0 t))))
 
 ;; http://sourceforge.net/projects/cedet/
 ;; http://sourceforge.net/projects/ecb/
@@ -88,18 +95,19 @@
 	 ;; 	     "http://www.emacswiki.org/emacs/download/tree-mode.el")))))
 	 )))
   (dolist (pkg pkg-list)
-    (let ((path (concat (concat pkg-path (car pkg))))
-	  (flist (cadr pkg)))
-      (flet ((get-move (f p) 
-		       (callprc (format "curl -C - -O %s" f))
-		       (rename-file (file-name-nondirectory f) p t)))
-      (if (not (file-exists-p path))
-	  (mkdir path))
-      (if (listp flist)
-	  (let (f)
-	    (dolist (f flist)
-	      (get-move f path)))
-	(get-move flist path))
-      (byte-recompile-directory path 0 t)))))
+    (when (or (not (file-exists-p path) package-overwrite))
+      (let ((path (concat (concat pkg-path (car pkg))))
+	    (flist (cadr pkg)))
+	(flet ((get-move (f p) 
+			 (callprc (format "curl -C - -O %s" f))
+			 (rename-file (file-name-nondirectory f) p t)))
+	  (if (not (file-exists-p path))
+	      (mkdir path))
+	  (if (listp flist)
+	      (let (f)
+		(dolist (f flist)
+		  (get-move f path)))
+	    (get-move flist path))
+	  (byte-recompile-directory path 0 t)))))
 
 ;; speedbar.el comes standard with Emacs 24
