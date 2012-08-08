@@ -790,7 +790,8 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 
 ;;;_ . sr-speedbar 
 
-(add-to-list 'load-path (concat local-packages "sr-speedbar"))
-(require 'sr-speedbar)
-(global-set-key (kbd "C-c n") 'sr-speedbar-toggle)
+(when (file-exists-p (concat local-packages "sr-speedbar"))
+  (add-to-list 'load-path (concat local-packages "sr-speedbar"))
+  (require 'sr-speedbar)
+  (global-set-key (kbd "C-c n") 'sr-speedbar-toggle))
 

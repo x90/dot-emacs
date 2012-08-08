@@ -1,0 +1,1 @@
+/home/stakahama/git/projects/dot-emacs/.emacs.d

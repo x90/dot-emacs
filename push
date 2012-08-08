@@ -3,8 +3,11 @@
 ## example usage:
 ## bash push "commit message"
 
-rsync -arvuP --delete-excluded --exclude='*~' --exclude-from=exclude ~/.emacs.d/ .emacs.d/
-rsync -avuP ~/.emacs .
+## no longer necessary because symbolic links are used
+# rsync -arvuP --delete-excluded --exclude='*~' --exclude-from=exclude ~/.emacs.d/ .emacs.d/
+# rsync -avuP ~/.emacs .
+
+## actual commit
 git add .
 if [ -z "$1" ]
 then

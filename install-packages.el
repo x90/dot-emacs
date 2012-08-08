@@ -7,22 +7,17 @@
 ;; auctex needs compilation (requires latex)
 
 ;; invoke with 
-;; $ emacs --script --quick first-install.el
-;; $ emacs --script --quick first-install.el arg -> where arg=1,t etc. to overwrite
+;; $ ./install-packages.el
+;; $ ./install-packages.el arg -> where arg!=-1 etc. to overwrite
 
-;;;_* parse argument
-(when argv
-  (setq package-overwrite t))
-
-;;;_* set directory
+;;;_* set user variables
 (setq pkg-path "~/lisp/local-packages/")
-(when (not (file-exists-p pkg-path))
-  (let ((basepath 
-	 (file-name-directory (replace-regexp-in-string "/$" "" pkg-path))))
-    (when (not (file-exists-p basepath))
-      (mkdir basepath)))
-    (mkdir pkg-path))
-(cd pkg-path)
+
+;;;_* load libraries
+(require 'cl)
+
+;;;_* parse script arguments
+(setq package-overwrite (if argv t nil))
 
 ;;;_* functions
 
@@ -34,13 +29,28 @@
 	       (if (not sep)
 		   (setq sep " "))
 	       (mapconcat 'identity mylist sep)))
-    (let ((get-command "curl -C - -O") ;(command "wget -c")
-	  (uncompress "tar -xzvf"))
+	(let ((get-command ;; curl may not work with https:// domains
+	       (if (executable-find "wget") "wget -c" "curl -C - -O"))
+	      (uncompress "tar -xzvf"))
       (join (list (join (list get-command (concat host filename)))
 		  (join (list uncompress filename))
 		  (join (list "rm" filename))
 		  (join (list "mv" (replace-regexp-in-string "\\.tar\\.gz" "" filename) 
 			      packagename))) " && "))))
+
+(defun try-compile (pathname)
+  (condition-case nil
+      (byte-recompile-directory pathname 0 t)
+    (error nil)))
+
+;;;_* create package directory
+(when (not (file-exists-p pkg-path))
+  (let ((basepath 
+	 (file-name-directory (replace-regexp-in-string "/$" "" pkg-path))))
+    (when (not (file-exists-p basepath))
+      (mkdir basepath)))
+    (mkdir pkg-path))
+(cd pkg-path)
 
 ;;;_* download files
 
@@ -58,9 +68,10 @@
 	 ("haskell-mode" "git clone https://github.com/haskell/haskell-mode.git haskell-mode")
 	 ("emacspeak" "cvs -z3 -d:pserver:anonymous@emacspeak.cvs.sourceforge.net:/cvsroot/emacspeak co -P emacspeak"))))
   (dolist (pkg pkg-list)
-    (when (or (not (file-exists-p path)) package-overwrite)
+    (when (or (not (file-exists-p (car pkg))) package-overwrite)
+      (print (format "installing %s" (car pkg)))
       (callprc (cadr pkg))
-      (byte-recompile-directory (concat pkg-path (car pkg)) 0 t))))
+      (try-compile (concat pkg-path (car pkg))))))
 
 ;;;_ . tar files
 ;;     (may need to update specific versions)
@@ -78,9 +89,10 @@
           ;;       http://github.com/magit/magit/downloads
           ;;       http://github.com/magit/magit/tarball/master
   (dolist (pkg pkg-list)
-    (when (or (not (file-exists-p path)) package-overwrite)
+    (when (or (not (file-exists-p (car pkg))) package-overwrite)
+      (print (format "installing %s" (car pkg)))
       (callprc (apply 'retrieve-untar-command pkg))
-      (byte-recompile-directory (concat pkg-path (car pkg)) 0 t))))
+      (try-compile (concat pkg-path (car pkg))))))
 
 ;; http://sourceforge.net/projects/cedet/
 ;; http://sourceforge.net/projects/ecb/
@@ -95,8 +107,9 @@
 	 ;; 	     "http://www.emacswiki.org/emacs/download/tree-mode.el")))))
 	 )))
   (dolist (pkg pkg-list)
-    (when (or (not (file-exists-p path)) package-overwrite)
-      (let ((path (concat (concat pkg-path (car pkg))))
+    (when (or (not (file-exists-p (car pkg))) package-overwrite)
+      (print (format "installing %s" (car pkg)))
+      (let ((path (concat pkg-path (car pkg)))
 	    (flist (cadr pkg)))
 	(flet ((get-move (f p) 
 			 (callprc (format "curl -C - -O %s" f))
@@ -108,6 +121,6 @@
 		(dolist (f flist)
 		  (get-move f path)))
 	    (get-move flist path))
-	  (byte-recompile-directory path 0 t)))))
+	  (try-compile path)))))
 
 ;; speedbar.el comes standard with Emacs 24

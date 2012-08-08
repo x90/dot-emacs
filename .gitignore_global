@@ -12,3 +12,7 @@ Thumbs.db
 ######################
 *~
 \#*#
+*.elc
+.git
+.DS_Store
+local-settings.el
