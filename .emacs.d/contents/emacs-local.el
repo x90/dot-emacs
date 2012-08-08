@@ -22,7 +22,12 @@
 (if (equal color-theme-local 'color-theme-tangotango)
     (load "color-theme-tangotango")
   (if (equal color-theme-local 'color-theme-zenburn)
-      (load "zenburn")))
+      (load "zenburn")
+    (if (equal color-theme-local 'color-theme-solarized)
+	(progn
+	  (load "emacs-colors-solarized/color-theme-solarized.el")
+	  (setq color-theme-local '(color-theme-solarized "dark"))))))
+
 ;; (let ((winsys-colorlist-default
 ;;        (list '("turtle" . color-theme-deep-blue)
 ;; 	     '("elguapo" . color-theme-charcoal-black)))
@@ -51,4 +56,6 @@
       (elem nil))
   (if (and window-system color-theme-local)
       ;; change color
-      (eval (list color-theme-local))))
+      (eval (if (listp color-theme-local)
+		color-theme-local 
+	      (list color-theme-local)))))
