@@ -43,16 +43,16 @@
 (load "frame-resizing-functions")
 
 ;;;_* ===== Python-mode =====
-(load "python-mode")
+(require 'python-mode)
 (setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
 (setq interpreter-mode-alist (cons '("python" . python-mode)
 				   interpreter-mode-alist))
 (autoload 'python-mode "python-mode" "Python editing mode." t)
-(defun load-python (&optional arg)
-  (interactive)
-  (load "python-mode" t)
-  (if arg (python-mode)))
-(load-python)
+;; (defun load-python (&optional arg)
+;;   (interactive)
+;;   (load "python-mode" t)
+;;   (if arg (python-mode)))
+;; (load-python)
 
 ;;;_ . hook
 (add-hook 'python-mode-hook 
@@ -98,9 +98,9 @@
 
 ;;;_* ===== iPython =====
 
+(require 'ipython)
 ;; (setq ipython-command "/Library/Frameworks/Python.framework/Versions/2.7/bin/ipython")
 ;; (setq ipython-command "/usr/local/bin/ipython")
-(require 'ipython)
 ;; (setq ipython-command "ipython")
 ;; (setq py-python-command-args '("--pylab"))
 
@@ -540,7 +540,7 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 ;;;_ . --- Evil-mode ---
 
 ;;;_  : keybindings/toggle
-(global-set-key (kbd "S-<f6>") 'evil-mode-toggle)
+;; (global-set-key (kbd "S-<f6>") 'evil-mode-toggle)
 (defun evil-mode-toggle ()
   (interactive)
   (if evil-mode
@@ -668,10 +668,6 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 ;;  '(term-default-bg-color "#000000")        ;; background color (black)
 ;;  '(term-default-fg-color "#dddd00"))       ;; foreground color (yellow)
 
-;;;_* ===== nav-mode =====
-
-(add-to-list 'load-path (concat local-packages "nav-mode"))
-(require 'nav)
 ;;;_* ===== code-folding =====
 
 ;;;_ . --- outline-mode ---
@@ -770,3 +766,31 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 ;; 	       "/Applications/Emacs.app/Contents/Resources/lisp/textmodes")
 ;;   (load "ispell"))
 ;; (setq ispell-program-name "/opt/local/bin/ispell")
+;;;_* ===== magit =====
+
+(add-to-list 'load-path (concat local-packages "magit"))
+(require 'magit)
+;;;_* ===== project navigation manager =====
+
+;; nav-mode is too simple: shows only top-level directory and forces its own window layout. 
+;; dirtree doesn't follow directory path of opened buffer and also forces its own window layout. (toggle?)
+;; so far sr-speedbar looks good...
+
+;;;_ . nav-mode
+
+;; (add-to-list 'load-path (concat local-packages "nav-mode"))
+;; (require 'nav)
+
+;; (nav-disable-overeager-window-splitting)
+
+;;;_ . dirtree
+
+;; (add-to-list 'load-path (concat local-packages "dirtree"))
+;; (autoload 'dirtree "dirtree" "Add directory to tree view" t)
+
+;;;_ . sr-speedbar 
+
+(add-to-list 'load-path (concat local-packages "sr-speedbar"))
+(require 'sr-speedbar)
+(global-set-key (kbd "C-c n") 'sr-speedbar-toggle)
+

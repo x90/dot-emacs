@@ -11,12 +11,11 @@
 (lexical-let ((PWD (pwd))
 	      (HOME (getenv "HOME")))
   (labels ((link (filename) 
-		  (print (format "ln -svf %s %s" 
-			  (path-join PWD filename) 
-			  (path-join HOME filename)))
-		  (call-process nil nil t "-svf" 
+		 (let ((lncmd
+			(format "ln -svf %s %s" 
 				(path-join PWD filename) 
 				(path-join HOME filename))))
+		   (call-process "/bin/bash" nil nil t "-c" lncmd))))
     (let ((filelist (list ".emacs" ".emacs.d"))
 	  (f nil))
       (dolist (f filelist)

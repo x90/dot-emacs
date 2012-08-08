@@ -242,7 +242,6 @@
 
 ;;;_* ===== ido mode =====
 
-
 (if (>= emacs-version-number 22)
     (progn
       (require 'ido)
@@ -251,7 +250,9 @@
       (add-hook 'ibuffer-mode-hook
 		(lambda ()
 		  (define-key ibuffer-mode-map [remap ibuffer-visit-buffer] 
-		    'ibuffer-like-ido-visit-buffer)))
+		    'ibuffer-like-ido-visit-buffer)
+		  (define-key ibuffer-mode-map [remap ibuffer-find-file]
+		    'ido-find-file))) ;; added 3/8/2012
       ;; make ibuffer like ido-mode
       (defun ibuffer-like-ido-visit-buffer (&optional single)
 	"Visit the buffer on this line.
