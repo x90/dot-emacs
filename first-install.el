@@ -7,8 +7,8 @@
 ;; auctex needs compilation (requires latex)
 
 ;; invoke with 
-;; $ emacs --script first-install.el
-;; $ emacs --script first-install.el arg -> where arg=1,t etc. to overwrite
+;; $ emacs --script --quick first-install.el
+;; $ emacs --script --quick first-install.el arg -> where arg=1,t etc. to overwrite
 
 ;;;_* parse argument
 (when argv
@@ -58,7 +58,7 @@
 	 ("haskell-mode" "git clone https://github.com/haskell/haskell-mode.git haskell-mode")
 	 ("emacspeak" "cvs -z3 -d:pserver:anonymous@emacspeak.cvs.sourceforge.net:/cvsroot/emacspeak co -P emacspeak"))))
   (dolist (pkg pkg-list)
-    (when (or (not (file-exists-p path) package-overwrite))
+    (when (or (not (file-exists-p path)) package-overwrite)
       (callprc (cadr pkg))
       (byte-recompile-directory (concat pkg-path (car pkg)) 0 t))))
 
@@ -78,7 +78,7 @@
           ;;       http://github.com/magit/magit/downloads
           ;;       http://github.com/magit/magit/tarball/master
   (dolist (pkg pkg-list)
-    (when (or (not (file-exists-p path) package-overwrite))
+    (when (or (not (file-exists-p path)) package-overwrite)
       (callprc (apply 'retrieve-untar-command pkg))
       (byte-recompile-directory (concat pkg-path (car pkg)) 0 t))))
 
@@ -95,7 +95,7 @@
 	 ;; 	     "http://www.emacswiki.org/emacs/download/tree-mode.el")))))
 	 )))
   (dolist (pkg pkg-list)
-    (when (or (not (file-exists-p path) package-overwrite))
+    (when (or (not (file-exists-p path)) package-overwrite)
       (let ((path (concat (concat pkg-path (car pkg))))
 	    (flist (cadr pkg)))
 	(flet ((get-move (f p) 
