@@ -20,7 +20,9 @@
   (labels ((unlink (filename)
 		   (let ((fullfile (path-join HOME filename)))
 		     (if (file-exists-p fullfile)
-			 (delete-file ))))
+			 (if (file-symlink-p fullfile)
+			     (delete-file filename)
+			   (rename-file filename (concat filename "_elsave"))))))
 	   (link (filename) 
 		 (let ((lncmd
 			(format "ln -svf %s %s" 
@@ -31,3 +33,4 @@
       (dolist (f filelist)
 	(unlink f)
 	(link f)))))
+
