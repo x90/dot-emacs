@@ -6,7 +6,7 @@
 ;; Primary variables
     (setq account-username "stakahama")
     (setq machine-name "turtle")
-    (setq emacs-root "~/.emacs.d/")
+    (setq emacs-root "~/.emacs.d/contents")
     (setq local-packages "~/lisp/local-packages")
     (setq color-theme-local 'color-theme-tangotango)
 ;; Also, additional lines for gblogger
@@ -26,19 +26,8 @@ Additional notes:
     C-u 0 M-x byte-recompile-directory
 - Only byte compile necessary files:
     M-x byte-recompile-directory
-- To commit edits, use ./push "message".
+- http://bitbucket.org/stakahama/myshell contains emacs and emacsclient aliases
 
-On a Mac, I also create these aliases in .bash_profile after installing the Cocoa/Nextstep Emacs:
-## --- emacs ---
-alias emacs='/Applications/Emacs.app/Contents/MacOS/Emacs'
-alias enw='/Applications/Emacs.app/Contents/MacOS/Emacs -nw'
-## --- emacsclient ---
-## http://philipweaver.blogspot.com/2009/08/emacs-23.html
-## start a windowed frame
-alias ec="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -n -c -a /Applications/Emacs.app/Contents/MacOS/Emacs"
-## start a terminal frame
-alias em="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -t -a /Applications/Emacs.app/Contents/MacOS/Emacs -nw"
-## do not start a new frame
-alias ea="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -n -a /Applications/Emacs.app/Contents/MacOS/Emacs"
-## --- kill emacs ---
-alias killemacs='/Applications/Emacs.app/Contents/MacOS/bin/emacsclient -e "(kill-emacs)"'
+Command line (bash) byte recompilation:
+$ emacs --batch --eval '(byte-recompile-directory ".emacs.d/contents" 0)'
+$ rm -f .emacs.d/contents/contributed/folding.elc ## never compiles correctly

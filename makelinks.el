@@ -6,6 +6,7 @@
 ;;;_* which files to link
 
 (setq filelist '(".emacs" ".emacs.d/contents" ".emacs.d/elpa"))
+(if (not (file-exists-p "~/.emacs.d/")) (mkdir "~/.emacs.d/"))
 
 ;;;_* libraries
 (require 'cl)
@@ -24,10 +25,9 @@
 			     (delete-file filename)
 			   (rename-file filename (concat filename "_elsave"))))))
 	   (link (filename) 
-		 (let ((lncmd
-			(format "ln -svf %s %s" 
-				(path-join PWD filename) 
-				(path-join HOME filename))))
+		 (let* ((localfile (path-join PWD filename))
+			(fullfile (path-join HOME filename))
+			(lncmd (format "ln -svf %s %s" localfile fullfile)))
 		   (call-process "/bin/bash" nil 0 t "-c" lncmd))))
     (let (f)
       (dolist (f filelist)
