@@ -299,6 +299,10 @@ one window."
 ;;    (interactive)
 ;;    (flyspell-mode 1))
 
+;;;_* ===== Global revert mode =====
+
+;; (global-auto-revert-mode t)
+
 ;;;_* ===== Full screen =====
 
 (defun toggle-fullscreen (&optional f)
