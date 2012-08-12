@@ -35,5 +35,8 @@ Additional notes:
 - http://bitbucket.org/stakahama/myshell contains emacs and emacsclient aliases
 
 Command line (bash) byte recompilation:
+
+```sh
 $ emacs --batch --eval '(byte-recompile-directory ".emacs.d/contents" 0)'
 $ rm -f .emacs.d/contents/contributed/folding.elc ## never compiles correctly
+```
