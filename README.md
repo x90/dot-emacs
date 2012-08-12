@@ -28,10 +28,8 @@ Additional notes:
 - Packages called in `if-installed.el` and additional machine-specific
   files (`turtle.el`, `elguapo.el`, `clamshell.el`) should be in the
   path specified by the local-packages variable.
-- Byte compile for first time ("0" prefix suppresses prompting for each file):
-    C-u 0 M-x byte-recompile-directory
-- Only byte compile necessary files:
-    M-x byte-recompile-directory
+- Byte compile for first time ("0" prefix suppresses prompting for each file): `C-u 0 M-x byte-recompile-directory`
+- Only byte compile necessary files: `M-x byte-recompile-directory`
 - http://bitbucket.org/stakahama/myshell contains emacs and emacsclient aliases
 
 Command line (bash) byte recompilation:
