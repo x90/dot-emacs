@@ -1,29 +1,29 @@
 Instructions
 - Download this repository to local machine (to update, use `git pull`)
-- makelinks.el will save current ~/.emacs as ~/.emacs_elsave; create symlink from .emacs to ~/.emacs and `emacs-root` (.emacs.d/contents to ~/.emacs.d/contents)
-- install-packages.el will install necessary packages (if not installed already in `local-packages`). Otherwise, package will not be loaded by if-installed.el.
+- makelinks.el will save current `~/.emacs` as `~/.emacs_elsave`; create symlink from .emacs to `~/.emacs` and `emacs-root` (`.emacs.d/contents` to `~/.emacs.d/contents`)
+- `install-packages.el` will install necessary packages (if not installed already in `local-packages`). Otherwise, package will not be loaded by `if-installed.el`.
 - Create or edit ~/.emacs.d/local-settings.el, which accepts values
-   for the following custom variables: account-username, machine-name,
-   emacs-root, local-packages, color-theme-local. For instance,
-#+BEGIN_EXAMPLE
-;; Primary variables
-    (setq account-username "stakahama")
-    (setq machine-name "turtle")
-    (setq emacs-root "~/.emacs.d/contents")
-    (setq local-packages "~/lisp/local-packages")
-    (setq color-theme-local 'color-theme-tangotango)
-;; Also, additional lines for gblogger
-    (setq g-user-email "me@gmail.com")
-    (setq g-blog-address "http://www.blogger.com/feeds/012345/posts/default")
-;; Environment variables can be set in .MacOSX/environment.plist (for OS X) and also as
-    (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))
-#+END_EXAMPLE
+   for the following custom variables: `account-username`, `machine-name`,
+   `emacs-root`, `local-packages`, `color-theme-local`. For instance,
+
+    ;; Primary variables
+      (setq account-username "stakahama")
+      (setq machine-name "turtle")
+      (setq emacs-root "~/.emacs.d/contents")
+      (setq local-packages "~/lisp/local-packages")
+      (setq color-theme-local 'color-theme-tangotango)
+    ;; Also, additional lines for gblogger
+      (setq g-user-email "me@gmail.com")
+      (setq g-blog-address "http://www.blogger.com/feeds/012345/posts/default")
+    ;; Environment variables can be set in .MacOSX/environment.plist (for OS X) and also as
+      (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))
+
 
 Additional notes:
-- ~/.emacs will load ~/.emacs.d/local-settings.el at the top of .emacs
+- `~/.emacs` will load `~/.emacs.d/local-settings.el` at the top
   (after definition of these custom variables)
-- Packages called in 'if-installed.el' and additional machine-specific
-  files ('turtle.el', 'elguapo.el', 'clamshell.el') should be in the
+- Packages called in `if-installed.el` and additional machine-specific
+  files (`turtle.el`, `elguapo.el`, `clamshell.el`) should be in the
   path specified by the local-packages variable.
 - Byte compile for first time ("0" prefix suppresses prompting for each file):
     C-u 0 M-x byte-recompile-directory
