@@ -1,22 +1,22 @@
 ;;;_* ===== Key bindings =====
 
 ;;;_ . --- rebindings ---
-(global-set-key (kbd "C-w") 'my-kill-region)
-(global-set-key (kbd "M-/") 'hippie-expand)
-(global-set-key "\M-q" 'fill-or-unfill-paragraph)
-(global-unset-key (kbd "s-p")) ;; was ns-print-buffer
+(global-set-key (kbd "M-/") 'hippie-expand)		;; built-in
+(global-set-key (kbd "C-w") 'my-kill-region)		;; lispcode-1/my-misc-functions.el
+(global-set-key "\M-q" 'fill-or-unfill-paragraph)	;; lispcode-1/unfill-functions.el
+
+;;;_ . --- unset ns-keys ---
+(global-unset-key (kbd "s-p")) 
 (global-unset-key (kbd "s-q")) 
 (global-unset-key (kbd "s-w")) 
 (global-unset-key (kbd "s-t")) 
 
-
 ;;;_  : to user-defined functions or packages
 
-(global-set-key (kbd "C-c %") 'match-paren)
-(global-set-key (kbd "C-x W") 'rename-file-and-buffer)
-(global-set-key (kbd "C-c Q") 'fix-horizontal-size)
-(global-set-key [(shift f1)] 'find-first-non-ascii-char)
-(global-set-key (kbd "C-c n") 'nav)
+(global-set-key (kbd "C-c %") 'match-paren)              ;; lispcode-1/my-misc-functions.el
+(global-set-key (kbd "C-x W") 'rename-file-and-buffer)   ;; lispcode-2/move-rename-yegge.el
+(global-set-key (kbd "C-c Q") 'fix-horizontal-size)      ;; lispcode-2/frame-resizing-functions.el
+(global-set-key [(shift f1)] 'find-first-non-ascii-char) ;; lispcode-2/unsafechars.el
 
 ;;;_* ===== Functions =====
 
@@ -43,73 +43,77 @@
 (load "frame-resizing-functions")
 
 ;;;_* ===== Python-mode =====
-(require 'python-mode)
-(setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
-(setq interpreter-mode-alist (cons '("python" . python-mode)
-				   interpreter-mode-alist))
-(autoload 'python-mode "python-mode" "Python editing mode." t)
-;; (defun load-python (&optional arg)
-;;   (interactive)
-;;   (load "python-mode" t)
-;;   (if arg (python-mode)))
-;; (load-python)
+(when (file-exists-p (concat local-packages "python-mode"))
+  (add-to-list 'load-path (concat local-packages "python-mode"))
+  (require 'python-mode)
+  (setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
+  (setq interpreter-mode-alist (cons '("python" . python-mode)
+				     interpreter-mode-alist))
+  (autoload 'python-mode "python-mode" "Python editing mode." t)
+  ;; (defun load-python (&optional arg)
+  ;;   (interactive)
+  ;;   (load "python-mode" t)
+  ;;   (if arg (python-mode)))
+  ;; (load-python)
 
 ;;;_ . hook
-(add-hook 'python-mode-hook 
-	  '(lambda () 
-	     (local-set-key (kbd "C-c z") 'py-oschdir)
-	     (local-set-key (kbd "C-c C-j") 'py-execute-line)
-	     (local-set-key (kbd "C-c C-p") 'py-execute-paragraph)
-	     (local-set-key (kbd "<C-return>") 'py-execute-region)))
+  (add-hook 'python-mode-hook 
+	    '(lambda () 
+	       (local-set-key (kbd "C-c z") 'py-oschdir)
+	       (local-set-key (kbd "C-c C-j") 'py-execute-line)
+	       (local-set-key (kbd "C-c C-p") 'py-execute-paragraph)
+	       (local-set-key (kbd "<C-return>") 'py-execute-region)))
 
 ;;;_ . functions
-(defun py-mark-line ()
-  (interactive)
-  (end-of-line)
-  (push-mark (point))
-  (beginning-of-line)
-  (exchange-point-and-mark)
-  (py-keep-region-active))
-(defun py-execute-line (&optional async)
-  (interactive "P")
-  (save-excursion
-    (py-mark-line)
-    (py-execute-region (mark) (point) async)))
-(defun py-mark-paragraph ()
-  (interactive)
-  (forward-paragraph)
-  (push-mark (point))
-  (backward-paragraph)
-  (exchange-point-and-mark)
-  (py-keep-region-active))
-(defun py-execute-paragraph (&optional async)
-  (interactive "P")
-  (save-excursion
-    (py-mark-paragraph)
-    (py-execute-region (mark) (point) async)))
-(defun py-oschdir ()
-  (interactive)
-  (let ((txt (format "import os; os.chdir(\"%s\")" 
-		     (file-name-directory (buffer-file-name)))))
-    (save-window-excursion
-      (with-temp-buffer
-	(insert txt)
-	(py-execute-buffer)))))
+  (defun py-mark-line ()
+    (interactive)
+    (end-of-line)
+    (push-mark (point))
+    (beginning-of-line)
+    (exchange-point-and-mark)
+    (py-keep-region-active))
+  (defun py-execute-line (&optional async)
+    (interactive "P")
+    (save-excursion
+      (py-mark-line)
+      (py-execute-region (mark) (point) async)))
+  (defun py-mark-paragraph ()
+    (interactive)
+    (forward-paragraph)
+    (push-mark (point))
+    (backward-paragraph)
+    (exchange-point-and-mark)
+    (py-keep-region-active))
+  (defun py-execute-paragraph (&optional async)
+    (interactive "P")
+    (save-excursion
+      (py-mark-paragraph)
+      (py-execute-region (mark) (point) async)))
+  (defun py-oschdir ()
+    (interactive)
+    (let ((txt (format "import os; os.chdir(\"%s\")" 
+		       (file-name-directory (buffer-file-name)))))
+      (save-window-excursion
+	(with-temp-buffer
+	  (insert txt)
+	  (py-execute-buffer))))))
 
 ;;;_* ===== iPython =====
 
-(require 'ipython)
-;; (setq ipython-command "/Library/Frameworks/Python.framework/Versions/2.7/bin/ipython")
-;; (setq ipython-command "/usr/local/bin/ipython")
-;; (setq ipython-command "ipython")
-;; (setq py-python-command-args '("--pylab"))
+(when (file-exists-p (concat local-packages "ipython"))
+  (add-to-list 'load-path (concat local-packages "ipython"))
+  (require 'ipython)
+  ;; (setq ipython-command "/Library/Frameworks/Python.framework/Versions/2.7/bin/ipython")
+  ;; (setq ipython-command "/usr/local/bin/ipython")
+  ;; (setq ipython-command "ipython")
+  ;; (setq py-python-command-args '("--pylab"))
 
 ;;;_ . clear screen
 
-(defun comint-clear-screen ()
-  (interactive)
-  (let ((comint-buffer-maximum-size 0))
-    (comint-truncate-buffer)))
+  (defun comint-clear-screen ()
+    (interactive)
+    (let ((comint-buffer-maximum-size 0))
+      (comint-truncate-buffer)))
 
 ;;;_ . additions
 ;; from 
@@ -146,6 +150,8 @@
 ;; (setq ipython-completion-command-string
 ;;       "print(';'.join(__IP.Completer.all_completions('%s'))) #PYTHON-MODE SILENT\n")
 
+)
+
 ;;;_* ===== Pylookup =====
 
 ;; ;;;_ . load package
@@ -172,110 +178,112 @@
 ;; (global-set-key "\C-ch" 'pylookup-lookup)
 
 ;;;_* ===== R/ESS =====
-(add-to-list 'load-path (concat local-packages "ess/lisp"))
-;; (global-set-key (kbd "C-c R") 'my-start-R-ESS);'my-ess-start-R)
+(when (file-exists-p (concat local-packages "ess"))
+  (add-to-list 'load-path (concat local-packages "ess/lisp"))
+  ;; (global-set-key (kbd "C-c R") 'my-start-R-ESS);'my-ess-start-R)
 
 ;;;_ . recommended
-;;
-(require 'ess-site)
-;; (require 'ess-eldoc)
-(setq-default inferior-R-args "--no-restore-history --no-save ")
-(setq ess-ask-for-ess-directory nil)
-(setq ess-local-process-name "R")
-(setq ansi-color-for-comint-mode 'filter)
-(setq comint-prompt-read-only t)
-(setq comint-scroll-to-bottom-on-input t)
-(setq comint-scroll-to-bottom-on-output t)
-(setq comint-move-point-for-output t)
-(autoload 'ess-rdired "ess-rdired" "View R objects in a dired-like buffer." t)
-;; (setq-default ess-default-style 'C++)
-;; (setq inferior-ess-r-help-command "utils::help(\"%s\", help_type=\"html\")\n") 
+  ;;
+  (require 'ess-site)
+  ;; (require 'ess-eldoc)
+  (setq-default inferior-R-args "--no-restore-history --no-save ")
+  (setq ess-ask-for-ess-directory nil)
+  (setq ess-local-process-name "R")
+  (setq ansi-color-for-comint-mode 'filter)
+  (setq comint-prompt-read-only t)
+  (setq comint-scroll-to-bottom-on-input t)
+  (setq comint-scroll-to-bottom-on-output t)
+  (setq comint-move-point-for-output t)
+  (autoload 'ess-rdired "ess-rdired" "View R objects in a dired-like buffer." t)
+  ;; (setq-default ess-default-style 'C++)
+  ;; (setq inferior-ess-r-help-command "utils::help(\"%s\", help_type=\"html\")\n") 
 
-(if (eq system-type 'darwin)
-    (setq inferior-R-args "--arch x86_64"))
+  (if (eq system-type 'darwin)
+      (setq inferior-R-args "--arch x86_64"))
 
 ;;;_ . suppress printing of sent commands for speedup
 
-(setq ess-eval-visibly-p nil) ;; from http://www.damtp.cam.ac.uk/user/sje30/ess11
+  (setq ess-eval-visibly-p nil) ;; from http://www.damtp.cam.ac.uk/user/sje30/ess11
 
-(if (not ess-eval-visibly-p)
-    (defun inferior-ess-output-filter (proc string)
-      "print newline after each evaluation when ess-eval-visibly-p is true
+  (if (not ess-eval-visibly-p)
+      (defun inferior-ess-output-filter (proc string)
+	"print newline after each evaluation when ess-eval-visibly-p is true
 works only with R
 from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32684429.html"
-      (let ((pbuf (process-buffer proc))
-	    (pmark (process-mark proc))
-	    (prompt-regexp "^>\\( [>+]\\)*\\( \\)$")
-	    (prompt-replace-regexp "^>\\( [>+]\\)*\\( \\)[^>+\n]"))
-	(setq string (replace-regexp-in-string prompt-replace-regexp " \n"
-					       string nil nil 2))
-	(with-current-buffer pbuf
-	  (goto-char pmark)
-	  (beginning-of-line)
-	  (when (looking-at prompt-regexp)
+	(let ((pbuf (process-buffer proc))
+	      (pmark (process-mark proc))
+	      (prompt-regexp "^>\\( [>+]\\)*\\( \\)$")
+	      (prompt-replace-regexp "^>\\( [>+]\\)*\\( \\)[^>+\n]"))
+	  (setq string (replace-regexp-in-string prompt-replace-regexp " \n"
+						 string nil nil 2))
+	  (with-current-buffer pbuf
 	    (goto-char pmark)
-	    (insert "\n")
-	    (set-marker pmark (point)))
-	  ))
-      (comint-output-filter proc (inferior-ess-strip-ctrl-g string))))
+	    (beginning-of-line)
+	    (when (looking-at prompt-regexp)
+	      (goto-char pmark)
+	      (insert "\n")
+	      (set-marker pmark (point)))
+	    ))
+	(comint-output-filter proc (inferior-ess-strip-ctrl-g string))))
 
 ;;;_ . functions
 
-(load "ess-hacks")
+  (load "ess-hacks")
 
 ;;;_ . hooks
-(add-hook 'ess-mode-hook
-	  '(lambda()
-	     (local-set-key (kbd "<C-return>") 'ess-eval-region)
-	     (local-set-key (kbd "C-c d") 'ess-rdired)
-	     (local-set-key (kbd "C-c 9") 'add-column-offset)))
+  (add-hook 'ess-mode-hook
+	    '(lambda()
+	       (local-set-key (kbd "<C-return>") 'ess-eval-region)
+	       (local-set-key (kbd "C-c d") 'ess-rdired)
+	       (local-set-key (kbd "C-c 9") 'add-column-offset)))
 
-(add-hook 'inferior-ess-mode-hook
-	  '(lambda()
-	     (local-set-key [C-up] 'comint-previous-input)
-	     (local-set-key [C-down] 'comint-next-input)))
+  (add-hook 'inferior-ess-mode-hook
+	    '(lambda()
+	       (local-set-key [C-up] 'comint-previous-input)
+	       (local-set-key [C-down] 'comint-next-input)))
 
 ;;;_* ===== Sweave =====
-;; http://www.mail-archive.com/auctex@gnu.org/msg03386.html
-(add-hook 'Rnw-mode-hook
-	  (lambda ()
-	    (add-to-list 'TeX-command-list
-			 '(;;"Sweave" "/usr/bin/R --no-save < %s"
-			   "Sweave" "R CMD BATCH --no-save %s /dev/tty"
-			   TeX-run-command nil (latex-mode) :help "Run Sweave") t)
-	    (add-to-list 'TeX-command-list
-			 '("LatexSweave" "%l %(mode) \\input{%s}"
-			   TeX-run-TeX nil (latex-mode) :help "Run Latex after Sweave") t)
-	    (setq TeX-command-default "Sweave")))
+  ;; http://www.mail-archive.com/auctex@gnu.org/msg03386.html
+  (add-hook 'Rnw-mode-hook
+	    (lambda ()
+	      (add-to-list 'TeX-command-list
+			   '(;;"Sweave" "/usr/bin/R --no-save < %s"
+			     "Sweave" "R CMD BATCH --no-save %s /dev/tty"
+			     TeX-run-command nil (latex-mode) :help "Run Sweave") t)
+	      (add-to-list 'TeX-command-list
+			   '("LatexSweave" "%l %(mode) \\input{%s}"
+			     TeX-run-TeX nil (latex-mode) :help "Run Latex after Sweave") t)
+	      (setq TeX-command-default "Sweave")))
 
-(add-hook 'noweb-minor-mode-hook 
-	  '(lambda () 
-	     (scroll-conservatively 10000)
-	     (visual-line-mode 1)))
+  (add-hook 'noweb-minor-mode-hook 
+	    '(lambda () 
+	       (scroll-conservatively 10000)
+	       (visual-line-mode 1))))
 
 ;;;_* ===== Elscreen ====
-(add-to-list 'load-path (concat local-packages "apel"))
-(add-to-list 'load-path (concat local-packages "elscreen"))
-(setq dir nil line nil column nil)
-(load "elscreen" "ElScreen" t)
-;; F9 creates a new elscreen, shift-F9 kills it <f8>
+(when (and (concat local-packages "apel")
+	   (concat local-packages "elscreen"))
+  (add-to-list 'load-path (concat local-packages "apel"))
+  (add-to-list 'load-path (concat local-packages "elscreen"))
+  (setq dir nil line nil column nil)
+  (load "elscreen" "ElScreen" t)
+  ;; F9 creates a new elscreen, shift-F9 kills it <f8>
 
 ;;;_ --- key bindings ---
-(global-set-key (kbd "<f6>"  ) 'elscreen-reset)
-(global-set-key (kbd "<f7>") 'elscreen-next)
-(global-set-key (kbd "S-<f7>") 'elscreen-previous)
-(global-set-key (kbd "<f8>"    ) 'elscreen-create)
-(global-set-key (kbd "S-<f8>"  ) 'elscreen-kill)
-(define-key elscreen-map "f" 'elscreen-find-file)
-(define-key elscreen-map "r" 'elscreen-reset)
-(define-key elscreen-map "l" 'elscreen-create)
-(global-set-key (kbd "S-C-<left>") 'elscreen-previous)
-(global-set-key (kbd "S-C-<right>") 'elscreen-right)
+  (global-set-key (kbd "<f6>"  ) 'elscreen-reset)
+  (global-set-key (kbd "<f7>") 'elscreen-next)
+  (global-set-key (kbd "S-<f7>") 'elscreen-previous)
+  (global-set-key (kbd "<f8>"    ) 'elscreen-create)
+  (global-set-key (kbd "S-<f8>"  ) 'elscreen-kill)
+  (define-key elscreen-map "f" 'elscreen-find-file)
+  (define-key elscreen-map "r" 'elscreen-reset)
+  (define-key elscreen-map "l" 'elscreen-create)
+  (global-set-key (kbd "S-C-<left>") 'elscreen-previous)
+  (global-set-key (kbd "S-C-<right>") 'elscreen-right)
 
 ;;;_ ... functions ---
-(defun elscreen-reset ()
-  "Cycles through screens so that window configurations are reset 
-(prevents flashing from redraw-frame[?] after each keystroke)"
+  (defun elscreen-reset ()
+    "Cycles through screens so that window configurations are reset (prevents flashing from redraw-frame[?] after each keystroke)"
   (interactive)
   ;; only happens when number of screens > 1
   (when (> (elscreen-get-number-of-screens) 1)
@@ -294,113 +302,115 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 ;; (let ()
 ;;   (ad-disable-advice 'set-frame-size 'after 'elscreen-set-frame-size)
 ;;   (ad-activate 'set-frame-size))
-
+)
 ;;;_* ===== Matlab =====
 
+(when (file-exists-p (concat local-packages "matlab-emacs"))
 ;;;_ . load-path
-;; (add-to-list 'load-path 
-;; 	     "/Applications/MATLAB_R2010a.app/java/extern/EmacsLink/lisp" t)
-(add-to-list 'load-path 
-	     (concat local-packages "matlab-emacs") t)
+  ;; (add-to-list 'load-path 
+  ;; 	     "/Applications/MATLAB_R2010a.app/java/extern/EmacsLink/lisp" t)
+  (add-to-list 'load-path 
+	       (concat local-packages "matlab-emacs") t)
 
 ;;;_ . my functions
 
-(defun matlab-shell-execute-line ()
-  (interactive)
-  (save-excursion
-    (end-of-line)
-    (push-mark (point))
-    (beginning-of-line)
-    (exchange-point-and-mark)
-    (matlab-shell-run-region (mark) (point))))
+  (defun matlab-shell-execute-line ()
+    (interactive)
+    (save-excursion
+      (end-of-line)
+      (push-mark (point))
+      (beginning-of-line)
+      (exchange-point-and-mark)
+      (matlab-shell-run-region (mark) (point))))
 
-(defun matlab-shell-open ()
-  (interactive)
-  (flet ((is-wide-p (thres)
-		    (> (frame-width) thres)))
-    (let ((this-buffer (buffer-name))
-	  (maxwidth 160))
-      ;; function body:
-      ;; delete other windows
-      (if (is-wide-p maxwidth)
-	  (delete-other-windows)
-	(condition-case nil
-	    (delete-other-windows-vertically)
-	  (error (delete-other-windows))))
-      ;; shell
-      (matlab-shell)
-      ;; split window between script and inferior shell
-      (if (is-wide-p maxwidth)
-	  (split-window-horizontally)
-	(split-window-vertically))
-      (switch-to-buffer this-buffer)
-      (enlarge-window 10))))
+  (defun matlab-shell-open ()
+    (interactive)
+    (flet ((is-wide-p (thres)
+		      (> (frame-width) thres)))
+      (let ((this-buffer (buffer-name))
+	    (maxwidth 160))
+	;; function body:
+	;; delete other windows
+	(if (is-wide-p maxwidth)
+	    (delete-other-windows)
+	  (condition-case nil
+	      (delete-other-windows-vertically)
+	    (error (delete-other-windows))))
+	;; shell
+	(matlab-shell)
+	;; split window between script and inferior shell
+	(if (is-wide-p maxwidth)
+	    (split-window-horizontally)
+	  (split-window-vertically))
+	(switch-to-buffer this-buffer)
+	(enlarge-window 10))))
 
-(add-hook 'matlab-mode-hook 
-	  (lambda ()
-	    (local-set-key (kbd "C-c R") 'matlab-shell-open)
-	    (local-set-key (kbd "C-c C-j") 'matlab-shell-execute-line)
-	    (local-set-key (kbd "<C-return>") 'matlab-shell-run-region)))
+  (add-hook 'matlab-mode-hook 
+	    (lambda ()
+	      (local-set-key (kbd "C-c R") 'matlab-shell-open)
+	      (local-set-key (kbd "C-c C-j") 'matlab-shell-execute-line)
+	      (local-set-key (kbd "<C-return>") 'matlab-shell-run-region)))
 
 ;;;_ . everything else
 
-;; http://www.andrew.cmu.edu/course/16-720/extras/matlab_in_emacs/
-(require 'matlab-load)
-(autoload 'matlab-mode "matlab" "Enter MATLAB mode." t)
-(setq auto-mode-alist (cons '("\\.m\\'" . matlab-mode) auto-mode-alist))
-(autoload 'matlab-shell "matlab" "Interactive MATLAB mode." t)
+  ;; http://www.andrew.cmu.edu/course/16-720/extras/matlab_in_emacs/
+  (require 'matlab-load)
+  (autoload 'matlab-mode "matlab" "Enter MATLAB mode." t)
+  (setq auto-mode-alist (cons '("\\.m\\'" . matlab-mode) auto-mode-alist))
+  (autoload 'matlab-shell "matlab" "Interactive MATLAB mode." t)
 
-(setq matlab-verify-on-save-flag nil) ; turn off auto-verify on save
-(defun my-matlab-mode-hook ()
-  (setq fill-column 76))		; where auto-fill should wrap
-;; (add-hook 'matlab-mode-hook 'my-matlab-mode-hook)
-;; (defun my-matlab-shell-mode-hook ()
-;;   '())
-;; (add-hook 'matlab-shell-mode-hook 'my-matlab-shell-mode-hook)
+  (setq matlab-verify-on-save-flag nil) ; turn off auto-verify on save
+  (defun my-matlab-mode-hook ()
+    (setq fill-column 76))		; where auto-fill should wrap
+  ;; (add-hook 'matlab-mode-hook 'my-matlab-mode-hook)
+  ;; (defun my-matlab-shell-mode-hook ()
+  ;;   '())
+  ;; (add-hook 'matlab-shell-mode-hook 'my-matlab-shell-mode-hook)
 
-;;(setq matlab-shell-command "/Applications/MATLAB_R2008a/bin/matlab")
-(setq matlab-shell-command (if (eq system-type 'darwin)
-			       (format "/Applications/%s/bin/matlab"
-				       (car (remove-if-not 
-					     (lambda (x) (string-match "MATLAB" x)) 
-					     (directory-files "/Applications"))))
-			     (if (eq system-type 'gnu/linux)
-				 "/usr/local/bin/matlab")))
-(setq matlab-shell-command-switches '("-nojvm" "-nosplash"))
+  ;;(setq matlab-shell-command "/Applications/MATLAB_R2008a/bin/matlab")
+  (setq matlab-shell-command (if (eq system-type 'darwin)
+				 (format "/Applications/%s/bin/matlab"
+					 (car (remove-if-not 
+					       (lambda (x) (string-match "MATLAB" x)) 
+					       (directory-files "/Applications"))))
+			       (if (eq system-type 'gnu/linux)
+				   "/usr/local/bin/matlab")))
+  (setq matlab-shell-command-switches '("-nojvm" "-nosplash"))
 
-;; defadvice is awesome
-(defadvice matlab-shell-run-region
-  (before matlab-shell-run-region-last-point activate)
-  "Deactivate mark before executing region 
+  ;; defadvice is awesome
+  (defadvice matlab-shell-run-region
+    (before matlab-shell-run-region-last-point activate)
+    "Deactivate mark before executing region 
    (region is preserved after mark is deactivated)"
-  (deactivate-mark)
-)
+    (deactivate-mark)
+    )
 
-;; (matlab-cedet-setup)
-;; http://www.mathworks.de/matlabcentral/newsreader/view_thread/160303
-(autoload 'matlab-eei-connect "matlab-eei"
-  "Connects Emacs to MATLAB's external editor interface.")
+  ;; (matlab-cedet-setup)
+  ;; http://www.mathworks.de/matlabcentral/newsreader/view_thread/160303
+  (autoload 'matlab-eei-connect "matlab-eei"
+    "Connects Emacs to MATLAB's external editor interface.")
 
-(setq matlab-verify-on-save-flag nil)	; turn off auto-verify on save
-;; using the function keys to control matlab debugging.
-(defun my-matlab-mode-hook ()
-  (define-key matlab-mode-map [f5] 'matlab-eei-run-continue)
-  (define-key matlab-mode-map [f9] 'matlab-shell-run-region)
-  (define-key matlab-mode-map [f10] 'matlab-eei-step)
-  (define-key matlab-mode-map [f11] 'matlab-eei-step-in)
-  (define-key matlab-mode-map [f12] 'matlab-eei-breakpoint-set-clear)
-  (define-key matlab-mode-map [f1] ' matlab-eei-exit-debug)
-  (setq fill-column 76)
-  (imenu-add-to-menubar "Find"))	; where auto-fill should wrap
-(add-hook 'matlab-mode-hook 'my-matlab-mode-hook)
+  (setq matlab-verify-on-save-flag nil)	; turn off auto-verify on save
+  ;; using the function keys to control matlab debugging.
+  (defun my-matlab-mode-hook ()
+    (define-key matlab-mode-map [f5] 'matlab-eei-run-continue)
+    (define-key matlab-mode-map [f9] 'matlab-shell-run-region)
+    (define-key matlab-mode-map [f10] 'matlab-eei-step)
+    (define-key matlab-mode-map [f11] 'matlab-eei-step-in)
+    (define-key matlab-mode-map [f12] 'matlab-eei-breakpoint-set-clear)
+    (define-key matlab-mode-map [f1] ' matlab-eei-exit-debug)
+    (setq fill-column 76)
+    (imenu-add-to-menubar "Find"))	; where auto-fill should wrap
+  (add-hook 'matlab-mode-hook 'my-matlab-mode-hook))
 
 ;;;_* ===== Emacs Color Theme =====
 
-;; commented out for aquamacs
-(add-to-list 'load-path (concat local-packages "color-theme"))
-(require 'color-theme)
-(setq color-theme-load-all-themes nil)
-(color-theme-initialize)
+(when (file-exists-p (concat local-packages "color-theme"))
+  ;; commented out for aquamacs
+  (add-to-list 'load-path (concat local-packages "color-theme"))
+  (require 'color-theme)
+  (setq color-theme-load-all-themes nil)
+  (color-theme-initialize))
 
 ;;;_* ===== Undo-tree-mode =====
 
@@ -430,100 +440,103 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 
 
 ;;;_* ===== AUCTeX =====
-(add-to-list 'load-path (concat local-packages "auctex"))
-(add-to-list 'load-path (concat local-packages "auctex/preview"))
+(when (file-exists-p (concat local-packages "auctex"))
+  (add-to-list 'load-path (concat local-packages "auctex"))
+  (add-to-list 'load-path (concat local-packages "auctex/preview"))
 
 ;;;_ . AUCTeX
 
-;; Load AUCTeX and preview-latex.
-(load "auctex.el" nil t t)
-(load "preview-latex.el" nil t t)
+  ;; Load AUCTeX and preview-latex.
+  (load "auctex.el" nil t t)
+  (load "preview-latex.el" nil t t)
 
-;; Minimal OS X-friendly configuration of AUCTeX. Since there is no
-;; DVI viewer for the platform, use pdftex/pdflatex by default for
-;; compilation. Furthermore, use 'open' to view the resulting PDF.
-;; Until Preview learns to refresh automatically on file updates, Skim
-;; (http://skim-app.sourceforge.net) is a nice PDF viewer.
-(setq TeX-PDF-mode t)
-(setq TeX-output-view-style
-      '(("^dvi$" "^xdvi$" "xdvi %dS %d")
-	("^dvi$" "." "open %dS %d")
-	;;("^pdf$" "." "open %o")
-	("^pdf$" "." "open -a \"Preview\" %o")
-	("^html?$" "." "open %o")))
+  ;; Minimal OS X-friendly configuration of AUCTeX. Since there is no
+  ;; DVI viewer for the platform, use pdftex/pdflatex by default for
+  ;; compilation. Furthermore, use 'open' to view the resulting PDF.
+  ;; Until Preview learns to refresh automatically on file updates, Skim
+  ;; (http://skim-app.sourceforge.net) is a nice PDF viewer.
+  (setq TeX-PDF-mode t)
+  (setq TeX-output-view-style
+	'(("^dvi$" "^xdvi$" "xdvi %dS %d")
+	  ("^dvi$" "." "open %dS %d")
+	  ;;("^pdf$" "." "open %o")
+	  ("^pdf$" "." "open -a \"Preview\" %o")
+	  ("^html?$" "." "open %o")))
 
-;; Add standard Sweave file extensions to the list of files recognized
-;; by AUCTeX.
-(setq TeX-file-extensions
-      '("Snw" "Rnw" "snw" "rnw" "tex" "sty" "cls" "ltx" "texi" "texinfo" "dtx"))
+  ;; Add standard Sweave file extensions to the list of files recognized
+  ;; by AUCTeX.
+  (setq TeX-file-extensions
+	'("Snw" "Rnw" "snw" "rnw" "tex" "sty" "cls" "ltx" "texi" "texinfo" "dtx"))
 
 
 ;;;_ . universal
 
-(load "latex-hacks-st")
+  (load "latex-hacks-st")
 
 ;;;_ . hooks
-(setq TeX-mode-hook '(lambda ()
-      (local-set-key (kbd "C-c e") 
-		     (LaTeX-enclose-expression "$"))
-      (local-set-key (kbd "C-c r")
-		     'LaTeX-wrap-environment-around-thing-or-region)
-      (local-set-key (kbd "C-c j") 
-		     'LaTeX-insert-item-no-newline)))
-      ;; (local-set-key (kbd "M-[ t") 'hide-body)
-      ;; (local-set-key (kbd "M-[ a") 'show-all)))
+  (setq TeX-mode-hook '(lambda ()
+			 (local-set-key (kbd "C-c e") 
+					(LaTeX-enclose-expression "$"))
+			 (local-set-key (kbd "C-c r")
+					'LaTeX-wrap-environment-around-thing-or-region)
+			 (local-set-key (kbd "C-c j") 
+					'LaTeX-insert-item-no-newline)))
+  ;; (local-set-key (kbd "M-[ t") 'hide-body)
+  ;; (local-set-key (kbd "M-[ a") 'show-all)))
 
-;; (setq PDFLaTeX-mode-hook '(lambda ()
-;;       (local-set-key (kbd "C-c e") 
-;; 		     (LaTeX-enclose-expression "$"))
-;;       (local-set-key (kbd "C-c r")
-;; 		     'LaTeX-wrap-environment-around-thing-or-region)
-;;       (local-set-key (kbd "C-c j") 
-;; 		     'LaTeX-insert-item-no-newline)))
-
+  ;; (setq PDFLaTeX-mode-hook '(lambda ()
+  ;;       (local-set-key (kbd "C-c e") 
+  ;; 		     (LaTeX-enclose-expression "$"))
+  ;;       (local-set-key (kbd "C-c r")
+  ;; 		     'LaTeX-wrap-environment-around-thing-or-region)
+  ;;       (local-set-key (kbd "C-c j") 
+  ;; 		     'LaTeX-insert-item-no-newline)))
+)
 ;;;_* ===== w3m and Google Apps: blogger, calendar... =====
 
-;; http://www.emacswiki.org/emacs/emacs-w3m#toc13
-;; % cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot login
-;; CVS password: # No password is set.  Just hit Enter/Return key.
-;; % cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot co emacs-w3m
-;; C-u 0 M-x byte-recompile-directory
+(when (file-exists-p (concat local-packages "emacs-w3m"))
+  ;; http://www.emacswiki.org/emacs/emacs-w3m#toc13
+  ;; % cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot login
+  ;; CVS password: # No password is set.  Just hit Enter/Return key.
+  ;; % cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot co emacs-w3m
+  ;; C-u 0 M-x byte-recompile-directory
 
-;; (setq warning-suppress-types nil)
-;; uncomment for aquamacs
-(add-to-list 'load-path (concat local-packages "emacs-w3m"))
-(add-to-list 'load-path (concat local-packages "emacspeak/lisp/g-client"))
-;; (load "gblogger.el") ;; no longer exists?
+  ;; (setq warning-suppress-types nil)
+  ;; uncomment for aquamacs
+  (add-to-list 'load-path (concat local-packages "emacs-w3m"))
+  (add-to-list 'load-path (concat local-packages "emacspeak/lisp/g-client"))
+  ;; (load "gblogger.el") ;; no longer exists?
 
-;; st
-(load "websc.el")
-;; http://web.mit.edu/nelhage/Public/dot-elisp/w3m/w3m-e23.el
-;; http://stuff.mit.edu/afs/sipb/contrib/emacs/packages/emacs-w3m-1.4.4/w3m-load.el
+  ;; st
+  (load "websc.el")
+  ;; http://web.mit.edu/nelhage/Public/dot-elisp/w3m/w3m-e23.el
+  ;; http://stuff.mit.edu/afs/sipb/contrib/emacs/packages/emacs-w3m-1.4.4/w3m-load.el
 
-;; (defun charset-id (arg) 
-;;   nil)
-;; (require 'w3m-e21)
-;; (provide 'w3m-e23)
+  ;; (defun charset-id (arg) 
+  ;;   nil)
+  ;; (require 'w3m-e21)
+  ;; (provide 'w3m-e23)
 
-;; (if (= emacs-major-version 23)
-;;     (progn
-;;       (require 'w3m-load)
-;;       (require 'w3m-ems))
-;;   (require 'w3m))
+  ;; (if (= emacs-major-version 23)
+  ;;     (progn
+  ;;       (require 'w3m-load)
+  ;;       (require 'w3m-ems))
+  ;;   (require 'w3m))
 
-(require 'w3m-load)
-(require 'w3m-ems)
+  (require 'w3m-load)
+  (require 'w3m-ems))
 
 ;;;_* ===== nXML mode and html functions =====
-(add-to-list 'load-path (concat local-packages "nxml-mode"))
-;; (load "~/.emacs.d/nxml-mode-20041004/rng-auto.el")
-;; (global-set-key (kbd "C-c C-w") 'w3m-goto-url-new-session)
-; for xml files, use nxml-mode instead of sgml-mode
-(add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
-(load "htmlize")
-(load "htmlize-xahlee")
-(setq htmlize-convert-nonascii-to-entities nil)
-(setq htmlize-html-charset "utf-8")
+(when (file-exists-p (concat local-packages "nxml-mode"))
+  (add-to-list 'load-path (concat local-packages "nxml-mode"))
+  ;; (load "~/.emacs.d/nxml-mode-20041004/rng-auto.el")
+  ;; (global-set-key (kbd "C-c C-w") 'w3m-goto-url-new-session)
+					; for xml files, use nxml-mode instead of sgml-mode
+  (add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
+  (load "htmlize")
+  (load "htmlize-xahlee")
+  (setq htmlize-convert-nonascii-to-entities nil)
+  (setq htmlize-html-charset "utf-8"))
 
 
 ;;;_* ===== Vim emulation =====
@@ -539,26 +552,26 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 
 ;;;_ . --- Evil-mode ---
 
+(when (file-exists-p (concat local-packages "evil"))
 ;;;_  : keybindings/toggle
-;; (global-set-key (kbd "S-<f6>") 'evil-mode-toggle)
-(defun evil-mode-toggle ()
-  (interactive)
-  (if evil-mode
-      (progn
-	(evil-mode -1)
-	(global-undo-tree-mode -1)
-	(show-paren-mode 1))
-    (evil-mode 1)))
+  ;; (global-set-key (kbd "S-<f6>") 'evil-mode-toggle)
+  (defun evil-mode-toggle ()
+    (interactive)
+    (if evil-mode
+	(progn
+	  (evil-mode -1)
+	  (global-undo-tree-mode -1)
+	  (show-paren-mode 1))
+      (evil-mode 1)))
 
 ;;;_  : load
-(when (file-exists-p (concat local-packages "evil"))
   ;; Evil requires undo-tree.el in the load-path for linear undo and undo branches.
   ;; undo-tree.el is in ~/.emacs.d/contributed/
   (add-to-list 'load-path (concat local-packages "evil"))
   (require 'undo-tree)
   (require 'evil)
   (global-undo-tree-mode -1)
-  (evil-mode -1))
+  (evil-mode -1)
 
 ;;;_  : visual-line-mode
 (defun evil-follow-emacs-visual-line ()
@@ -572,7 +585,7 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 (add-hook 'evil-mode 
 	  (lambda ()
 	    (when visual-line-mode
-	      (evil-follow-emacs-visual-line))))
+	      (evil-follow-emacs-visual-line)))))
 
 ;;;_* ===== Google Weather =====
 
@@ -759,6 +772,7 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 
 (require 'tbemail)
 (add-hook 'tbemail-mode-hook 'visual-line-mode)
+
 ;;;_* ===== ispell =====
 
 ;; (when (file-exists-p "/Applications/Emacs.app/Contents/Resources/lisp/textmodes")
@@ -768,8 +782,10 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 ;; (setq ispell-program-name "/opt/local/bin/ispell")
 ;;;_* ===== magit =====
 
-(add-to-list 'load-path (concat local-packages "magit"))
-(require 'magit)
+(when (file-exists-p (concat local-packages "magit"))
+  (add-to-list 'load-path (concat local-packages "magit"))
+  (require 'magit))
+
 ;;;_* ===== project navigation manager =====
 
 ;; nav-mode is too simple: shows only top-level directory and forces its own window layout. 
@@ -778,10 +794,11 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 
 ;;;_ . nav-mode
 
-;; (add-to-list 'load-path (concat local-packages "nav-mode"))
-;; (require 'nav)
-
-;; (nav-disable-overeager-window-splitting)
+;; (when (file-exists-p (concat local-packages "nav-mode"))
+;;   (add-to-list 'load-path (concat local-packages "nav-mode"))
+;;   (require 'nav)
+;;   (nav-disable-overeager-window-splitting)
+;;   (global-set-key (kbd "C-c n") 'nav))
 
 ;;;_ . dirtree
 

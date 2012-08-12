@@ -1,5 +1,8 @@
-1) Download this repository to local machine (to update, use ./pull)
-2) Create or edit ~/.emacs.d/local-settings.el, which accepts values
+Instructions
+- Download this repository to local machine (to update, use `git pull`)
+- makelinks.el will save current ~/.emacs as ~/.emacs_elsave; create symlink from .emacs to ~/.emacs and `emacs-root` (.emacs.d/contents to ~/.emacs.d/contents)
+- install-packages.el will install necessary packages (if not installed already in `local-packages`). Otherwise, package will not be loaded by if-installed.el.
+- Create or edit ~/.emacs.d/local-settings.el, which accepts values
    for the following custom variables: account-username, machine-name,
    emacs-root, local-packages, color-theme-local. For instance,
 #+BEGIN_EXAMPLE

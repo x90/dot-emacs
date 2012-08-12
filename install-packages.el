@@ -1,4 +1,4 @@
-#!/usr/bin/emacs --script
+;; #!/usr/bin/emacs --script
 
 ;; OS X:
 ;;   install wget, bzr with homebrew/macports/fink
@@ -6,9 +6,15 @@
 ;;   install curl, bzr, git, ftp, cvs with apt/synaptic
 ;; auctex needs compilation (requires latex)
 
+;; OS X: 
+;;   may additionally need to fix wget certificates
+;;   http://loopkid.net/articles/2011/09/20/ssl-certificate-errors-on-mac-os-x
+;;   $ sudo port install curl-ca-bundle
+;;   $ echo "CA_CERTIFICATE=/opt/local/share/curl/curl-ca-bundle.crt" >> ~/.wgetrc
+
 ;; invoke with 
-;; $ ./install-packages.el
-;; $ ./install-packages.el arg -> where arg!=-1 etc. to overwrite
+;; $ emacs -Q --script install-packages.el
+;; $ emacs -Q --script install-packages.el arg -> where arg!=-1 etc. to overwrite
 
 ;;;_* set user variables
 (setq pkg-path "~/lisp/local-packages/")
@@ -21,6 +27,9 @@
 
 ;;;_* functions
 
+(setq get-command (if (executable-find "wget") "wget -c" "curl -C - -O"))
+					; note: curl may not work with https:// domains
+
 (defun callprc (string)
   (call-process "/bin/bash" nil nil t "-c" string))
 
@@ -29,9 +38,7 @@
 	       (if (not sep)
 		   (setq sep " "))
 	       (mapconcat 'identity mylist sep)))
-	(let ((get-command ;; curl may not work with https:// domains
-	       (if (executable-find "wget") "wget -c" "curl -C - -O"))
-	      (uncompress "tar -xzvf"))
+	(let ((uncompress "tar -xzvf"))
       (join (list (join (list get-command (concat host filename)))
 		  (join (list uncompress filename))
 		  (join (list "rm" filename))
@@ -55,18 +62,20 @@
 ;;;_* download files
 
 ;;;_ . version control repositories
-(let (pkg
+(let ((pkg nil)
       (pkg-list 
-       '(("apel" "cvs -z9 -d :pserver:anonymous@cvs.m17n.org:/cvs/root checkout apel")
-	 ("ess" "git clone https://github.com/emacs-ess/ESS.git ess")
-	 ("org-mode" "git clone git://orgmode.org/org-mode.git")
-	 ("python-mode" "bzr branch lp:python-mode")
-	 ("ipython" "mkdir ipython && cd ipython && curl -O -C - https://raw.github.com/ipython/ipython/master/docs/emacs/ipython.el")
-	 ("evil" "git clone git://gitorious.org/evil/evil.git")
-	 ("emacs-w3m" "cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot co emacs-w3m")
-	 ("matlab-emacs" "cvs -z3 -d:pserver:anonymous@matlab-emacs.cvs.sourceforge.net:/cvsroot/matlab-emacs co -P matlab-emacs")
-	 ("haskell-mode" "git clone https://github.com/haskell/haskell-mode.git haskell-mode")
-	 ("emacspeak" "cvs -z3 -d:pserver:anonymous@emacspeak.cvs.sourceforge.net:/cvsroot/emacspeak co -P emacspeak"))))
+       (append 
+	'(("apel" "cvs -z9 -d :pserver:anonymous@cvs.m17n.org:/cvs/root checkout apel")
+	  ("ess" "git clone https://github.com/emacs-ess/ESS.git ess")
+	  ("org-mode" "git clone git://orgmode.org/org-mode.git")
+	  ("python-mode" "bzr branch lp:python-mode")
+	  ("evil" "git clone git://gitorious.org/evil/evil.git")
+	  ("emacs-w3m" "cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot co emacs-w3m")
+	  ("matlab-emacs" "cvs -z3 -d:pserver:anonymous@matlab-emacs.cvs.sourceforge.net:/cvsroot/matlab-emacs co -P matlab-emacs")
+	  ("haskell-mode" "git clone https://github.com/haskell/haskell-mode.git haskell-mode")
+	  ("emacspeak" "cvs -z3 -d:pserver:anonymous@emacspeak.cvs.sourceforge.net:/cvsroot/emacspeak co -P emacspeak"))
+	(list (list "ipython" (format "mkdir ipython && cd ipython && %s https://raw.github.com/ipython/ipython/master/docs/emacs/ipython.el" 
+				      get-command))))))
   (dolist (pkg pkg-list)
     (when (or (not (file-exists-p (car pkg))) package-overwrite)
       (print (format "installing %s" (car pkg)))
@@ -75,12 +84,14 @@
 
 ;;;_ . tar files
 ;;     (may need to update specific versions)
-(let (pkg
+(let ((pkg nil)
       (pkg-list 
        '(("color-theme" "http://ftp.igh.cnrs.fr/pub/nongnu/color-theme/" "color-theme-6.6.0.tar.gz")
 	 ;; ("emacs-w3m" "http://emacs-w3m.namazu.org/" "emacs-w3m-1.4.4.tar.gz")
 	 ("nxml-mode" "http://www.thaiopensource.com/download/" "nxml-mode-20041004.tar.gz")
 	 ("elscreen" "ftp://ftp.morishima.net/pub/morishima.net/naoto/ElScreen/" "elscreen-1.4.6.tar.gz")
+	 ;; in case bzr is not installed
+	 ("python-mode" "https://launchpad.net/python-mode/trunk/6.0.10/+download/python-mode.el-6.0.10.tar.gz")
 	 ;; the following may have newer versions
 	 ("auctex" "http://ftp.gnu.org/pub/gnu/auctex/" "auctex-11.86.tar.gz")
 	 ;; ("nav-mode" "http://emacs-nav.googlecode.com/files/" "emacs-nav-20110220.tar.gz")
@@ -99,7 +110,7 @@
 
 ;;;_ . individual files
 
-(let (pkg
+(let ((pkg nil)
       (pkg-list
        '(("sr-speedbar" "http://emacswiki.org/emacs/download/sr-speedbar.el")
 	 ;; ("dirtree" ("http://www.emacswiki.org/emacs/download/dirtree.el"
@@ -112,7 +123,7 @@
       (let ((path (concat pkg-path (car pkg)))
 	    (flist (cadr pkg)))
 	(flet ((get-move (f p) 
-			 (callprc (format "curl -C - -O %s" f))
+			 (callprc (format "%s %s" get-command f))
 			 (rename-file (file-name-nondirectory f) p t)))
 	  (if (not (file-exists-p path))
 	      (mkdir path))
@@ -121,6 +132,6 @@
 		(dolist (f flist)
 		  (get-move f path)))
 	    (get-move flist path))
-	  (try-compile path)))))
+	  (try-compile path))))))
 
 ;; speedbar.el comes standard with Emacs 24
