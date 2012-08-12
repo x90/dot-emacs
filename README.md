@@ -4,6 +4,7 @@ Instructions:
 - `install-packages.el` will install necessary packages (if not installed already in `local-packages`). Otherwise, package will not be loaded by `if-installed.el`.
 - Create or edit ~/.emacs.d/local-settings.el, which accepts values for the following custom variables: `account-username`, `machine-name`,
    `emacs-root`, `local-packages`, `color-theme-local`. For instance,
+
 ```emacs-lisp
 ;; Primary variables
   (setq account-username "stakahama")
@@ -18,6 +19,7 @@ Instructions:
   ;;(setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))
   (load "~/.emacs.d/bash_env.el")
 ```
+
 - Regarding the last line above, http://bitbucket.org/stakahama/myshell also contains `makeelfile.py` which will create a file called `bash_env.el` in `myshell/{OSname}/.emacs.d/` (and a symlink to `~/.emacs.d/bash_env.el`) for OSes in which environmental or system variables in `.bashrc`, `.xsession`, or `.MacOSX/environment.plist` cannot be accessed.
 
 Additional notes:
