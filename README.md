@@ -2,10 +2,8 @@ Instructions:
 - Download this repository to local machine (to update, use `git pull`)
 - `makelinks.el` will save current `~/.emacs` as `~/.emacs_elsave`; create symlink from .emacs to `~/.emacs` and `emacs-root` (`.emacs.d/contents` to `~/.emacs.d/contents`)
 - `install-packages.el` will install necessary packages (if not installed already in `local-packages`). Otherwise, package will not be loaded by `if-installed.el`.
-- Create or edit ~/.emacs.d/local-settings.el, which accepts values
-   for the following custom variables: `account-username`, `machine-name`,
+- Create or edit ~/.emacs.d/local-settings.el, which accepts values for the following custom variables: `account-username`, `machine-name`,
    `emacs-root`, `local-packages`, `color-theme-local`. For instance,
-
 ```emacs-lisp
 ;; Primary variables
   (setq account-username "stakahama")
@@ -17,8 +15,10 @@ Instructions:
   (setq g-user-email "me@gmail.com")
   (setq g-blog-address "http://www.blogger.com/feeds/012345/posts/default")
 ;; Environment variables can be set in .MacOSX/environment.plist (for OS X) and also as
-  (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))
+  ;;(setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))
+  (load "~/.emacs.d/bash_env.el")
 ```
+- Regarding the last line above, http://bitbucket.org/stakahama/myshell also contains `makeelfile.py` which will create a file called `bash_env.el` in `myshell/{OSname}/.emacs.d/` (and a symlink to `~/.emacs.d/bash_env.el`) for OSes in which environmental or system variables in `.bashrc`, `.xsession`, or `.MacOSX/environment.plist` cannot be accessed.
 
 Additional notes:
 - `~/.emacs` will load `~/.emacs.d/local-settings.el` at the top
