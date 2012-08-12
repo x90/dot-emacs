@@ -6,17 +6,17 @@ Instructions:
    for the following custom variables: `account-username`, `machine-name`,
    `emacs-root`, `local-packages`, `color-theme-local`. For instance,
 
-    ;; Primary variables
-      (setq account-username "stakahama")
-      (setq machine-name "turtle")
-      (setq emacs-root "~/.emacs.d/contents")
-      (setq local-packages "~/lisp/local-packages")
-      (setq color-theme-local 'color-theme-tangotango)
-    ;; Also, additional lines for gblogger
-      (setq g-user-email "me@gmail.com")
-      (setq g-blog-address "http://www.blogger.com/feeds/012345/posts/default")
-    ;; Environment variables can be set in .MacOSX/environment.plist (for OS X) and also as
-      (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))
+```;; Primary variables
+  (setq account-username "stakahama")
+  (setq machine-name "turtle")
+  (setq emacs-root "~/.emacs.d/contents")
+  (setq local-packages "~/lisp/local-packages")
+  (setq color-theme-local 'color-theme-tangotango)
+;; Also, additional lines for gblogger
+  (setq g-user-email "me@gmail.com")
+  (setq g-blog-address "http://www.blogger.com/feeds/012345/posts/default")
+;; Environment variables can be set in .MacOSX/environment.plist (for OS X) and also as
+  (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))```
 
 
 Additional notes:
