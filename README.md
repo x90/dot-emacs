@@ -17,8 +17,8 @@ Instructions:
   (setq g-user-email "me@gmail.com")
   (setq g-blog-address "http://www.blogger.com/feeds/012345/posts/default")
 ;; Environment variables can be set in .MacOSX/environment.plist (for OS X) and also as
-  (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))```
-
+  (setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))
+```
 
 Additional notes:
 - `~/.emacs` will load `~/.emacs.d/local-settings.el` at the top
