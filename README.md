@@ -6,7 +6,8 @@ Instructions:
    for the following custom variables: `account-username`, `machine-name`,
    `emacs-root`, `local-packages`, `color-theme-local`. For instance,
 
-```;; Primary variables
+```emacs-lisp
+;; Primary variables
   (setq account-username "stakahama")
   (setq machine-name "turtle")
   (setq emacs-root "~/.emacs.d/contents")
