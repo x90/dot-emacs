@@ -113,6 +113,7 @@
 (let ((pkg nil)
       (pkg-list
        '(("sr-speedbar" "http://emacswiki.org/emacs/download/sr-speedbar.el")
+	 ("autopair" "https://raw.github.com/capitaomorte/autopair/master/autopair.el")
 	 ;; ("dirtree" ("http://www.emacswiki.org/emacs/download/dirtree.el"
 	 ;; 	     "http://www.emacswiki.org/emacs/download/windata.el"
 	 ;; 	     "http://www.emacswiki.org/emacs/download/tree-mode.el")))))
