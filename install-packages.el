@@ -70,7 +70,8 @@
 	'(("apel" "cvs -z9 -d :pserver:anonymous@cvs.m17n.org:/cvs/root checkout apel")
 	  ("ess" "git clone https://github.com/emacs-ess/ESS.git ess")
 	  ("org-mode" "git clone git://orgmode.org/org-mode.git")
-	  ("python-mode" "bzr branch lp:python-mode")
+	  ;; ("python-mode" "bzr branch lp:python-mode") ;; I think there is a problem
+	  ("autopair" "git clone git://github.com/capitaomorte/autopair.git")
 	  ("evil" "git clone git://gitorious.org/evil/evil.git")
 	  ("emacs-w3m" "cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot co emacs-w3m")
 	  ("matlab-emacs" "cvs -z3 -d:pserver:anonymous@matlab-emacs.cvs.sourceforge.net:/cvsroot/matlab-emacs co -P matlab-emacs")
@@ -81,6 +82,7 @@
   (dolist (pkg pkg-list)
     (if (file-exists-p (car pkg))
 	(let ((here default-directory))
+	  (print (format "updating %s" (car pkg)))
 	  (cd (concat pkg-path (car pkg)))
 	  (format "%s update" (car (split-string (cadr pkg))))
 	  (cd here))
@@ -120,8 +122,8 @@
 (let ((pkg nil)
       (pkg-list
        '(("sr-speedbar" "http://emacswiki.org/emacs/download/sr-speedbar.el")
-	 ("autopair" "https://raw.github.com/capitaomorte/autopair/master/autopair.el")
-	 ("ipython" "https://raw.github.com/ipython/ipython/master/docs/emacs/ipython.el")
+	 ;; ("ipython" "https://raw.github.com/ipython/ipython/master/docs/emacs/ipython.el") ;; problems
+	 ;; ("autopair" "https://raw.github.com/capitaomorte/autopair/master/autopair.el")
 	 ;; ("dirtree" ("http://www.emacswiki.org/emacs/download/dirtree.el"
 	 ;; 	     "http://www.emacswiki.org/emacs/download/windata.el"
 	 ;; 	     "http://www.emacswiki.org/emacs/download/tree-mode.el")))))

@@ -43,7 +43,7 @@
 (load "frame-resizing-functions")
 
 ;;;_* ===== Python-mode =====
-(when (file-exists-p (concat local-packages "python-mode"))
+(when (or t (file-exists-p (concat local-packages "python-mode"))) ;; using archived
   (add-to-list 'load-path (concat local-packages "python-mode"))
   (require 'python-mode)
   (setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
@@ -99,7 +99,7 @@
 
 ;;;_* ===== iPython =====
 
-(when (file-exists-p (concat local-packages "ipython"))
+(when (or t (file-exists-p (concat local-packages "ipython"))) ;; using archived
   (add-to-list 'load-path (concat local-packages "ipython"))
   (require 'ipython)
   ;; (setq ipython-command "/Library/Frameworks/Python.framework/Versions/2.7/bin/ipython")
