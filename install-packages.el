@@ -62,9 +62,11 @@
 ;;;_* download files
 
 ;;;_ . version control repositories
+
+;; need to add update clause for git, cvs, bzr
 (let ((pkg nil)
       (pkg-list 
-       (append 
+       ;; (append 
 	'(("apel" "cvs -z9 -d :pserver:anonymous@cvs.m17n.org:/cvs/root checkout apel")
 	  ("ess" "git clone https://github.com/emacs-ess/ESS.git ess")
 	  ("org-mode" "git clone git://orgmode.org/org-mode.git")
@@ -73,14 +75,19 @@
 	  ("emacs-w3m" "cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot co emacs-w3m")
 	  ("matlab-emacs" "cvs -z3 -d:pserver:anonymous@matlab-emacs.cvs.sourceforge.net:/cvsroot/matlab-emacs co -P matlab-emacs")
 	  ("haskell-mode" "git clone https://github.com/haskell/haskell-mode.git haskell-mode")
-	  ("emacspeak" "cvs -z3 -d:pserver:anonymous@emacspeak.cvs.sourceforge.net:/cvsroot/emacspeak co -P emacspeak"))
-	(list (list "ipython" (format "mkdir ipython && cd ipython && %s https://raw.github.com/ipython/ipython/master/docs/emacs/ipython.el" 
-				      get-command))))))
+	  ("emacspeak" "cvs -z3 -d:pserver:anonymous@emacspeak.cvs.sourceforge.net:/cvsroot/emacspeak co -P emacspeak"))))
+	;; (list (list "ipython" (format "mkdir ipython && cd ipython && %s https://raw.github.com/ipython/ipython/master/docs/emacs/ipython.el" 
+	;; 			      get-command))))))
   (dolist (pkg pkg-list)
-    (when (or (not (file-exists-p (car pkg))) package-overwrite)
-      (print (format "installing %s" (car pkg)))
-      (callprc (cadr pkg))
-      (try-compile (concat pkg-path (car pkg))))))
+    (if (file-exists-p (car pkg))
+	(let ((here default-directory))
+	  (cd (concat pkg-path (car pkg)))
+	  (format "%s update" (car (split-string (cadr pkg))))
+	  (cd here))
+      (progn 
+	(print (format "installing %s" (car pkg)))
+	(callprc (cadr pkg))
+	(try-compile (concat pkg-path (car pkg)))))))
 
 ;;;_ . tar files
 ;;     (may need to update specific versions)
@@ -91,7 +98,7 @@
 	 ("nxml-mode" "http://www.thaiopensource.com/download/" "nxml-mode-20041004.tar.gz")
 	 ("elscreen" "ftp://ftp.morishima.net/pub/morishima.net/naoto/ElScreen/" "elscreen-1.4.6.tar.gz")
 	 ;; in case bzr is not installed
-	 ("python-mode" "https://launchpad.net/python-mode/trunk/6.0.10/+download/python-mode.el-6.0.10.tar.gz")
+	 ;; ("python-mode" "https://launchpad.net/python-mode/trunk/6.0.10/+download/" "python-mode.el-6.0.10.tar.gz")
 	 ;; the following may have newer versions
 	 ("auctex" "http://ftp.gnu.org/pub/gnu/auctex/" "auctex-11.86.tar.gz")
 	 ;; ("nav-mode" "http://emacs-nav.googlecode.com/files/" "emacs-nav-20110220.tar.gz")
@@ -114,6 +121,7 @@
       (pkg-list
        '(("sr-speedbar" "http://emacswiki.org/emacs/download/sr-speedbar.el")
 	 ("autopair" "https://raw.github.com/capitaomorte/autopair/master/autopair.el")
+	 ("ipython" "https://raw.github.com/ipython/ipython/master/docs/emacs/ipython.el")
 	 ;; ("dirtree" ("http://www.emacswiki.org/emacs/download/dirtree.el"
 	 ;; 	     "http://www.emacswiki.org/emacs/download/windata.el"
 	 ;; 	     "http://www.emacswiki.org/emacs/download/tree-mode.el")))))
