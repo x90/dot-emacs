@@ -44,7 +44,7 @@
 
 ;;;_* ===== Python-mode =====
 (when (or t (file-exists-p (concat local-packages "python-mode"))) ;; using archived
-  (add-to-list 'load-path (concat local-packages "python-mode"))
+  ;; (add-to-list 'load-path (concat local-packages "python-mode"))
   (require 'python-mode)
   (setq auto-mode-alist (cons '("\\.py$" . python-mode) auto-mode-alist))
   (setq interpreter-mode-alist (cons '("python" . python-mode) interpreter-mode-alist))
@@ -87,7 +87,8 @@
     (interactive "P")
     (save-excursion
       (py-mark-paragraph)
-      (py-execute-region (mark) (point) async)))
+      (py-execute-region (mark) (point) async))
+    (forward-paragraph)) ;; appended 15/08/2012
   (defun py-oschdir ()
     (interactive)
     (let ((txt (format "import os; os.chdir(\"%s\")" 
@@ -100,7 +101,7 @@
 ;;;_* ===== iPython =====
 
 (when (or t (file-exists-p (concat local-packages "ipython"))) ;; using archived
-  (add-to-list 'load-path (concat local-packages "ipython"))
+  ;; (add-to-list 'load-path (concat local-packages "ipython"))
   (require 'ipython)
   ;; (setq ipython-command "/Library/Frameworks/Python.framework/Versions/2.7/bin/ipython")
   ;; (setq ipython-command "/usr/local/bin/ipython")
@@ -551,7 +552,8 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 
 ;;;_ . --- Evil-mode ---
 
-(when (file-exists-p (concat local-packages "evil"))
+(when (and nil (file-exists-p (concat local-packages "evil")))
+  ; Symbol's function definition is void: evil-custom-initialize-pending-reset
 ;;;_  : keybindings/toggle
   ;; (global-set-key (kbd "S-<f6>") 'evil-mode-toggle)
   (defun evil-mode-toggle ()
@@ -573,18 +575,19 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
   (evil-mode -1)
 
 ;;;_  : visual-line-mode
-(defun evil-follow-emacs-visual-line ()
-  (interactive)
-  (define-key evil-motion-state-map "j" #'evil-next-visual-line)
-  (define-key evil-motion-state-map "k" #'evil-previous-visual-line)
-  (define-key evil-motion-state-map "$" #'evil-end-of-visual-line)
-  (define-key evil-motion-state-map "^" #'evil-first-non-blank-of-visual-line)
-  (define-key evil-motion-state-map "0" #'evil-beginning-of-visual-line))
+  (defun evil-follow-emacs-visual-line ()
+    (interactive)
+    (define-key evil-motion-state-map "j" #'evil-next-visual-line)
+    (define-key evil-motion-state-map "k" #'evil-previous-visual-line)
+    (define-key evil-motion-state-map "$" #'evil-end-of-visual-line)
+    (define-key evil-motion-state-map "^" #'evil-first-non-blank-of-visual-line)
+    (define-key evil-motion-state-map "0" #'evil-beginning-of-visual-line))
 
-(add-hook 'evil-mode 
-	  (lambda ()
-	    (when visual-line-mode
-	      (evil-follow-emacs-visual-line)))))
+  (add-hook 'evil-mode 
+	    (lambda ()
+	      (when visual-line-mode
+		(evil-follow-emacs-visual-line))))
+)
 
 ;;;_* ===== Google Weather =====
 
@@ -711,61 +714,65 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 
 ;;;_* ===== Org-mode ! =====
 
-(add-to-list 'load-path (concat local-packages "org-mode/lisp"))
-(add-to-list 'load-path (concat local-packages "org-mode/contrib/lisp"))
-(require 'org-install)
-(require 'org-latex)
-;; The following lines are always needed.  Choose your own keys.
-(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
-;;{{{--- original keybindings ---
+(when (file-exists-p (concat local-packages "org-mode"))
+  (add-to-list 'load-path (concat local-packages "org-mode/lisp"))
+  (add-to-list 'load-path (concat local-packages "org-mode/contrib/lisp")))
+
+(when (require 'org nil 'noerror);(require 'org-mode nil 'noerror)
+  (require 'org-install)
+  (require 'org-latex)
+  ;; The following lines are always needed.  Choose your own keys.
+  (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+  ;;{{{--- original keybindings ---
 ;; (global-set-key "\C-cl" 'org-store-link)
 ;; (global-set-key "\C-ca" 'org-agenda)
 ;; (global-set-key "\C-cb" 'org-iswitchb)
 ;;}}}
-(global-set-key "\C-c8" 'org-store-link)
-(global-set-key "\C-c9" 'org-agenda)
-(global-set-key "\C-c0" 'org-iswitchb)
+  (global-set-key "\C-c8" 'org-store-link)
+  (global-set-key "\C-c9" 'org-agenda)
+  (global-set-key "\C-c0" 'org-iswitchb)
 
 ;;;_ . my customizations for export logbook entries
-(defvar org-logbook-mode-p nil)
-(defvar org-default-vars nil)
-(load "org-logbook-mode")
-(load "org-latex-hacks")
-;; (load "org-latex-hacked")
+  (defvar org-logbook-mode-p nil)
+  (defvar org-default-vars nil)
+  (load "org-logbook-mode")
+  (load "org-latex-hacks")
+  ;; (load "org-latex-hacked")
 
 ;;;_ . defaults
 
-(defun org-get-defaults ()
-  (let ((vars '(org-agenda-files
-	       org-format-latex-options
-	       org-export-latex-date-format
-	       org-export-latex-image-default-option
-	       org-export-latex-classes)))
-    (mapcar (lambda (x) (cons x (eval x))) vars)))
+  (defun org-get-defaults ()
+    (let ((vars '(org-agenda-files
+		  org-format-latex-options
+		  org-export-latex-date-format
+		  org-export-latex-image-default-option
+		  org-export-latex-classes)))
+      (mapcar (lambda (x) (cons x (eval x))) vars)))
 
-(defun org-restore-defaults (default-vars)
-  (interactive)
-  (mapc (lambda (x) 
-	  (set (car x) (cdr x)))
-	default-vars))
+  (defun org-restore-defaults (default-vars)
+    (interactive)
+    (mapc (lambda (x) 
+	    (set (car x) (cdr x)))
+	  default-vars))
 
-(setq org-default-vars (org-get-defaults))
-;; restore with 
-;; (org-restore-defaults org-default-vars)
+  (setq org-default-vars (org-get-defaults))
+  ;; restore with 
+  ;; (org-restore-defaults org-default-vars)
 
 ;;;_ . further customizations
-(add-hook 'org-mode-hook
-	  '(lambda ()
-	     ;;(auto-fill-mode 1)
-	     ;;(org-indent-mode t)
-	     (local-set-key (kbd "C-c e") 
-			    (LaTeX-enclose-expression "\\(" "\\)"))
-	     (local-set-key (kbd "C-c r")
-			    'LaTeX-wrap-environment-around-thing-or-region)
-	     (local-set-key (kbd "C-c s")
-			    'org-begin-or-end)
-	     (define-key org-mode-map "\M-q" 'fill-paragraph)
-	     (local-set-key [(shift f6)] 'org-export-as-html)))
+  (add-hook 'org-mode-hook
+	    '(lambda ()
+	       ;;(auto-fill-mode 1)
+	       ;;(org-indent-mode t)
+	       (local-set-key (kbd "C-c e") 
+			      (LaTeX-enclose-expression "\\(" "\\)"))
+	       (local-set-key (kbd "C-c r")
+			      'LaTeX-wrap-environment-around-thing-or-region)
+	       (local-set-key (kbd "C-c s")
+			      'org-begin-or-end)
+	       (define-key org-mode-map "\M-q" 'fill-paragraph)
+	       (local-set-key [(shift f6)] 'org-export-as-html)))
+)
 
 ;;;_* ===== tbe-mode (Thunderbird) =====
 
@@ -811,3 +818,9 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
   (require 'sr-speedbar)
   (global-set-key (kbd "C-c n") 'sr-speedbar-toggle))
 
+;;;_* ===== Language Tool =====
+
+(when (and (and (boundp 'langtool-language-tool-jar) 
+		(file-exists-p langtool-language-tool-jar))
+	   (file-exists-p (concat local-packages "Emacs-langtool")))
+  (require 'langtool))

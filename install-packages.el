@@ -30,6 +30,12 @@
 (setq get-command (if (executable-find "wget") "wget -c" "curl -C - -O"))
 					; note: curl may not work with https:// domains
 
+(setq update-command (make-hash-table :test 'equal))
+(puthash "git" "pull" update-command)
+(puthash "cvs" "update" update-command)
+(puthash "bzr" "update" update-command)
+(puthash "svn" "update" update-command)
+
 (defun callprc (string)
   (call-process "/bin/bash" nil nil t "-c" string))
 
@@ -63,13 +69,14 @@
 
 ;;;_ . version control repositories
 
-;; need to add update clause for git, cvs, bzr
+;; (packagename command)
 (let ((pkg nil)
       (pkg-list 
        ;; (append 
 	'(("apel" "cvs -z9 -d :pserver:anonymous@cvs.m17n.org:/cvs/root checkout apel")
 	  ("ess" "git clone https://github.com/emacs-ess/ESS.git ess")
 	  ("org-mode" "git clone git://orgmode.org/org-mode.git")
+	  ("langtool" "git clone git://github.com/mhayashi1120/Emacs-langtool.git")
 	  ;; ("python-mode" "bzr branch lp:python-mode") ;; I think there is a problem
 	  ("autopair" "git clone git://github.com/capitaomorte/autopair.git")
 	  ("evil" "git clone git://gitorious.org/evil/evil.git")
@@ -84,7 +91,8 @@
 	(let ((here default-directory))
 	  (print (format "updating %s" (car pkg)))
 	  (cd (concat pkg-path (car pkg)))
-	  (format "%s update" (car (split-string (cadr pkg))))
+	  (let ((rcc (car (split-string (cadr pkg))))) ;; revision control command
+	    (callprc (format "%s %s" rcc (gethash rcc update-command))))
 	  (cd here))
       (progn 
 	(print (format "installing %s" (car pkg)))
@@ -93,6 +101,7 @@
 
 ;;;_ . tar files
 ;;     (may need to update specific versions)
+;; (packagename url filename)
 (let ((pkg nil)
       (pkg-list 
        '(("color-theme" "http://ftp.igh.cnrs.fr/pub/nongnu/color-theme/" "color-theme-6.6.0.tar.gz")
@@ -119,6 +128,7 @@
 
 ;;;_ . individual files
 
+;; (packagename filepath)
 (let ((pkg nil)
       (pkg-list
        '(("sr-speedbar" "http://emacswiki.org/emacs/download/sr-speedbar.el")

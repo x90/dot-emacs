@@ -192,7 +192,7 @@
 			     line))))
     (let ((devices '("pdf" "png" "trellice.device" "dev.copy" "bmp" "jpeg" "tiff" "gif"))
 	  (r-regexpr-pattern ".+\\\\.(pdf|png|bmp|jpg|tiff|gif)")
-	  (r-expression "with(list(exec=\"%s\",textline='%s'),{expr <- parse(text=textline)[[1]]; filename <- if( !is.null(expr$file) ) expr$file else {for(e in as.list(expr)) if(is.character(e)&&grepl(\"%s\",e)||is.call(e)&&any(sapply(e[1:2],`==`,quote(sprintf)))) break; e}; if(file.exists(filename)) system(paste(exec,filename)) else \"no match\"})")
+	  (r-expression "with(list(exec=\"%s\",textline='%s'),{expr <- parse(text=textline)[[1]]; filename <- if( !is.null(expr$file) ) expr$file else {for(e in as.list(expr)) if(is.character(e)&&grepl(\"%s\",e)||is.call(e)&&any(sapply(e[1:2],`==`,quote(sprintf)))) break; e}; if(is.call(filename)) filename <- eval(filename); if(file.exists(filename)) system(paste(exec,filename)) else \"no match\"})")
 	  exec matched-expression)
       (setq exec (if arg "~/bin/compresspdf"
 		   (if (eq system-type 'darwin) "open -a \\\"Preview\\\"" 

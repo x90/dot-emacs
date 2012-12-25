@@ -18,6 +18,11 @@ Instructions:
 ;; Environment variables can be set in .MacOSX/environment.plist (for OS X) and also as
   ;;(setenv "PATH" (concat "/opt/local/bin:/opt/local/sbin:" (getenv "PATH")))
   (load "~/.emacs.d/bash_env.el")
+;; Ispell/Aspell
+(setq ispell-program-name "/opt/local/bin/ispell")
+;; LanguageTool
+(setq langtool-language-tool-jar "~/Programs/LanguageTool/LanguageTool.jar")
+(setq langtool-mother-tongue "en")
 ```
 
 - Regarding the last line above, http://bitbucket.org/stakahama/myshell also contains `makeelfile.py` which will create a file called `bash_env.el` in `myshell/{OSname}/.emacs.d/` (and a symlink to `~/.emacs.d/bash_env.el`) for OSes in which environmental or system variables in `.bashrc`, `.xsession`, or `.MacOSX/environment.plist` cannot be accessed.
