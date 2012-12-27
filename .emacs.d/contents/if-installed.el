@@ -823,4 +823,5 @@ from http://old.nabble.com/cat-a-%22%5Cn%22-when-ess-eval-visibly-p-is-nil--td32
 (when (and (and (boundp 'langtool-language-tool-jar) 
 		(file-exists-p langtool-language-tool-jar))
 	   (file-exists-p (concat local-packages "Emacs-langtool")))
+  (add-to-list 'load-path (concat local-packages "Emacs-langtool"))
   (require 'langtool))
