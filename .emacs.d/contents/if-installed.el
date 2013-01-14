@@ -63,6 +63,16 @@
 	       (local-set-key (kbd "C-c C-p") 'py-execute-paragraph)
 	       (local-set-key (kbd "<C-return>") 'py-execute-region)))
 
+
+;; (when (file-exists-p (reduce 'path-join (list emacs-root "lispcode-2" "hohe2-lookup-pydoc.el")))
+(condition-case nil
+    (progn
+      (load "hohe2-lookup-pydoc")
+      (add-hook 'python-mode-hook
+		(lambda ()
+		  (local-set-key (kbd "C-h f") 'hohe2-lookup-pydoc))))
+  (error nil))
+
 ;;;_ . functions
   (defun py-mark-line ()
     (interactive)
